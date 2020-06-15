@@ -78,7 +78,8 @@ function getCode() {
         if (result != null) {
           $.formhash = result[1]
           $.isSign = false
-          console.log(`${$.name} ✅已找到code: ${$.formhash}`)    
+          console.log(`${$.name} ✅已找到code: ${$.formhash}`)  
+          resove()
         }
         else {
           console.log(`${$.name} 🚫找不到formhash, cookie可能失效了`)
