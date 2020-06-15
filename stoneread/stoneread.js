@@ -4,18 +4,12 @@
  * 📕地址：https://github.com/toulanboy/scripts
  * 📌不定期更新各种签到、有趣的脚本，欢迎star🌟
  * 
- * 【请先认真阅读以下内容，再进行操作】
- *  让同学们认真看的原因：石头读书只有1个接口，导致无法精确识别签到接口。
+ * 【请认真阅读以下内容】
  * 
  * 1、 根据你当前的软件，配置好srcipt。Tips:由于是远程文件，记得顺便更新文件。
- * 2、 请【关闭】软件的 MITM 和 rewrite。
- * 3、 打开石头读书，点击签到。然后停留在当前页面（点击签到后的页面）。不要关闭。
- * 4、 请【打开】软件的 MITM 和 rewrite。
- * 5、 回到石头读书，【迅速点击】今天的日期。到此，获取cookie成功。
- * 6、 请【回到】quanx，关掉获取cookie的rewrite。（loon是关掉获取cookie的脚本）
- * 
- * 📌 测试cookie是否正确： 手动运行一遍签到，若提示重复签到，则成功。否则，请重新执行上述2-6步，直到成功！
- * 📌 这个后续可能会继续完善，到时获取步骤就简单了。现在只能麻烦大家啦~。
+ * 2、 打开石头读书，点击签到。点击签到后，有一个日历的页面，建议再次点击今天的日期，确保获取成功。
+ * 3、 quanx等软件，关掉获取cookie的rewrite。（loon是关掉获取cookie的脚本）
+
  * 
  * Surge:
  * Rewrite: 石头读书 = type=http-request,pattern=^https?:\/\/app.stoneread.com\/api\/apiClient\/index,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/stoneread/stoneread.js,requires-body=true
@@ -45,7 +39,10 @@ const debug = false
 !(async () => {
   $.log('', `🔔 ${$.name}, 开始!`, '')
   if (typeof $request != "undefined") {
-    await getCookie()
+    await checkin(0)
+    if ($.isCorrentLink) {
+      await getCookie()
+    }
   }
   else {
     await checkin()
@@ -64,18 +61,19 @@ function getCookie() {
   if (VAL_body && VAL_headers) {
     $.setdata($request.body, 'stone_body')
     $.setdata(JSON.stringify($request.headers), 'stone_headers')
-    $.msg("📚石头读书", `📌获取会话成功`, `🐳请现在手动运行签到js。\n1️⃣若提示"不能重复签到"，则成功获取cookie。\n2️⃣若提示其它信息，请重新获取cookie，直到正确。`)
+    $.msg("📚石头读书", `📌获取会话成功`)
     if (debug) {
       console.log($.getdata("stone_body"))
       console.log($.getdata("stone_headers"))
     }
   }
 }
-function checkin() {
+
+function checkin(type = 1) {
   const myRequest = {
     url: `https://app.stoneread.com/api/apiClient/index`,
-    headers: `${JSON.parse($.stone_headers)}`,
-    body: `${$.stone_body}`
+    headers: `${type == 1 ? JSON.parse($.stone_headers): JSON.stringify($request.headers)}`,
+    body: `${type == 1 ? $.stone_body : $request.body}`
   };
   return new Promise((resove) => {
     $.post(myRequest, (error, response, data) => {
@@ -87,6 +85,19 @@ function checkin() {
       const success = rb.success
       const result = rb.result.Message.messagestr
       console.log(result)
+      if (type != 1) {
+        if (result.match(/签到/)) {
+          console.log(`🚒 ${result}`)
+          $.isCorrentLink = true
+          resove()
+          return
+        }
+        else {
+          $.isCorrentLink = false
+          resove()
+          return
+        }
+      }
       if (success == 0)
         $.msg("📚石头读书", `📌${result}`)
       else if(success == 1){
