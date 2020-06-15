@@ -11,19 +11,19 @@
  4. 手动跑1次，看看是否能获取到今天签到的金币数。
  
 Surge:
-Rewrite: 小木虫论坛 = type=http-request,pattern=^https?:\/\/mapi.xmcimg.com\/bbs\/memcp.php\?action,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js,requires-body=true
+Rewrite: 小木虫论坛 = type=http-request,pattern=^https?:\/\/mapi.xmcimg.com\/bbs\/memcp.php\?action,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js,requires-body=false
 Tasks: 小木虫论坛 = type=cron,cronexp="5 0  * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js,wake-system=true,timeout=600
   
 QuanX:
 [rewrite]
-^https?:\/\/mapi.xmcimg.com\/bbs\/memcp.php\?action url script-request-body https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js
+^https?:\/\/mapi.xmcimg.com\/bbs\/memcp.php\?action url script-request-header https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js
 [task]
 5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js, tag=小木虫论坛
   
 Loon:
 [script]
 cron "5 0 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js, timeout=600, tag=小木虫论坛
-http-request ^https?:\/\/mapi.xmcimg.com\/bbs\/memcp.php\?action script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js,requires-body=true, tag=小木虫论坛cookie获取
+http-request ^https?:\/\/mapi.xmcimg.com\/bbs\/memcp.php\?action script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js,requires-body=false, tag=小木虫论坛cookie获取
  
 [MITM]
 hostname = *.xmcimg.com
@@ -31,9 +31,8 @@ hostname = *.xmcimg.com
 const $ = new Env('🦜小木虫论坛')
 
 $.muchong_headers = $.getdata("muchong_headers")
-$.muchong_body = $.getdata("muchong_body")
 
-const debug = true
+const debug = false
 
 !(async () => {
   if (typeof $request != "undefined") {
@@ -53,14 +52,12 @@ const debug = true
     $.done()
   })
 function getCookie() {
-  const VAL_body = $request.body
+    console.log($)
   const VAL_headers = JSON.stringify($request.headers)
-  if (VAL_body && VAL_headers) {
-    $.setdata($request.body, 'muchong_body')
+  if (VAL_headers) {
     $.setdata(JSON.stringify($request.headers), 'muchong_headers')
     $.msg($.name, `📌获取会话成功`)
     if (debug) {
-      console.log($.getdata("muchong_body"))
       console.log($.getdata("muchong_headers"))
     }
   }
