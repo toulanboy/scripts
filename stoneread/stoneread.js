@@ -18,7 +18,7 @@
  * 📌 这个后续可能会继续完善，到时获取步骤就简单了。现在只能麻烦大家啦~。
  * 
  * Surge:
- * Rewrite: 石头 = type=http-request,pattern=^https?:\/\/app.stoneread.com\/api\/apiClient\/index,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/stoneread/stoneread.js,requires-body=true
+ * Rewrite: 石头读书 = type=http-request,pattern=^https?:\/\/app.stoneread.com\/api\/apiClient\/index,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/stoneread/stoneread.js,requires-body=true
  * Tasks: 石头读书 = type=cron,cronexp="5 0 * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/stoneread/stoneread.js,wake-system=true,timeout=600
  * 
  * QuanX:
