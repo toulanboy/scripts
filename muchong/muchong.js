@@ -1,4 +1,9 @@
 /*
+ Author: @toulanboy 
+ 
+📕地址：https://github.com/toulanboy/scripts
+📌不定期更新各种签到、有趣的脚本，欢迎star🌟
+
 配置步骤 （请先认真阅读配置，再进行操作）
  1. 根据你当前的软件，配置好srcipt。Tips:由于是远程文件，记得顺便更新文件。
  2. 打开小木虫app => 发现页面 => 签到领红包 => 拆红包。弹出通知，即获取成功。
