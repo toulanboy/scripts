@@ -37,7 +37,6 @@ $.stone_body = $.getdata("stone_body")
 const debug = false
 
 !(async () => {
-  $.log('', `🔔 ${$.name}, 开始!`, '')
   if (typeof $request != "undefined") {
     await checkin(0)
     if ($.isCorrentLink) {
@@ -52,7 +51,7 @@ const debug = false
     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
   })
   .finally(() => {
-    $.log('', `🔔 ${$.name}, 结束!`, ''), $.done()
+    $.done()
   })
 
 function getCookie() {
@@ -78,16 +77,15 @@ function checkin(type = 1) {
   return new Promise((resove) => {
     $.post(myRequest, (error, response, data) => {
       if (error) throw new Error(error)
-      if (debug)
-        console.log(response)
+      if (debug) console.log(response)
 
       rb = JSON.parse(response.body)
       const success = rb.success
       const result = rb.result.Message.messagestr
-      console.log(result)
+      if(debug) console.log(result)
       if (type != 1) {
         if (result.match(/签到/)) {
-          console.log(`🚒 ${result}`)
+          console.log(`${$.name}  🥰 检测到签到页面啦！ 页面内容是：${result}`)
           $.isCorrentLink = true
           resove()
           return
