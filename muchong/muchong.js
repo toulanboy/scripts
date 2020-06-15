@@ -52,7 +52,6 @@ const debug = false
     $.done()
   })
 function getCookie() {
-    console.log($)
   const VAL_headers = JSON.stringify($request.headers)
   if (VAL_headers) {
     $.setdata(JSON.stringify($request.headers), 'muchong_headers')
