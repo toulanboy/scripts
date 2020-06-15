@@ -71,7 +71,7 @@ function getCookie() {
 function checkin(type = 1) {
   const myRequest = {
     url: `https://app.stoneread.com/api/apiClient/index`,
-    headers: `${type == 1 ? JSON.parse($.stone_headers): JSON.stringify($request.headers)}`,
+    headers: `${type == 1 ? JSON.parse($.stone_headers): $request.headers}`,
     body: `${type == 1 ? $.stone_body : $request.body}`
   };
   return new Promise((resove) => {
