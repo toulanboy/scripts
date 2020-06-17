@@ -53,8 +53,9 @@
   hostname = api.weibo.cn
 
   *********/
-  
+
  $ = new Env("微博超话")
+ debug = false
  const tokenurl = "evil_tokenurl";
  const tokencheckinurl = "evil_tokencheckinurl";
  const tokenheaders = "evil_tokenheaders";
@@ -72,10 +73,10 @@
  $.name_list = []
  $.id_list = []
  $.val_list = []
-$.msg_max_num = 20
-$.successNum = 0
-$.failNum = 0
-   !(async () => {
+ $.msg_max_num = 20
+ $.successNum = 0
+ $.failNum = 0
+ !(async () => {
      await getnumber(time);
      for (j = 1; j <= pagenumber; j++) {
        await getid(j);
@@ -93,20 +94,20 @@ $.failNum = 0
      $.done()
    })
  
-function output() {
-  $.this_msg = ""
-  for (var i = 0; i < $.message.length; ++i) {
-    if (i && i % $.msg_max_num == 0) {
-        $.msg(`${$.name}: 成功${$.successNum}个，失败${$.failNum}`, `当前第${parseInt(i/$.msg_max_num)}页 / 共${parseInt($.message.length/$.msg_max_num)+1}页`, $.this_msg)
-      $.this_msg = ""
-    }
-    $.this_msg += `${$.message[i]}\n`
-  }
-  if ($.message.length % $.msg_max_num != 0) {
-    $.msg(`${$.name}: 成功${$.successNum}个，失败${$.failNum}`, `当前第${parseInt(i/$.msg_max_num)+1}页 / 共${parseInt($.message.length/$.msg_max_num)+1}页`, $.this_msg)
-  }
+ function output() {
+   $.this_msg = ""
+   for (var i = 0; i < $.message.length; ++i) {
+     if (i && i % $.msg_max_num == 0) {
+       $.msg(`${$.name}: 成功${$.successNum}个，失败${$.failNum}`, `当前第${parseInt(i/$.msg_max_num)}页 / 共${parseInt($.message.length/$.msg_max_num)+1}页`, $.this_msg)
+       $.this_msg = ""
+     }
+     $.this_msg += `${$.message[i]}\n`
+   }
+   if ($.message.length % $.msg_max_num != 0) {
+     $.msg(`${$.name}: 成功${$.successNum}个，失败${$.failNum}`, `当前第${parseInt(i/$.msg_max_num)+1}页 / 共${parseInt($.message.length/$.msg_max_num)+1}页`, $.this_msg)
+   }
  }
-
+ 
  function getnumber(s) {
    return new Promise((resove) => {
      var idrequest = {
@@ -144,25 +145,22 @@ function output() {
      $.get(idrequest, (error, response, data) => {
        var body = response.body;
        var obj = JSON.parse(body);
-       //console.log(obj);
        var group = obj.cards[0]["card_group"];
-       //console.log(group);
        number = group.length;
-       //console.log(number);
        for (i = 0; i < number; i++) {
-         // console.log(group[i])
          var name = group[i]["title_sub"];
          $.name_list.push(name)
-         // console.log($.name_list)
-         console.log(name)
  
          var val = group[i].desc;
          $.val_list.push(val)
-         console.log(val)
  
          var id = group[i].scheme.slice(33, 71);
          $.id_list.push(id)
-         console.log(id)
+         if (debug) {
+           console.log(name)
+           console.log(val)
+           console.log(id)
+         }
          // checkin(id, name, val, time);
        }
        resove()
@@ -186,11 +184,12 @@ function output() {
    return new Promise(resolve => {
      $.get(checkinrequest, (error, response, data) => {
        //console.log(response)
-        // $.name = $.name.match(/(.*?)超话/)[1]
+       name = name.replace(/超话/, "")
        if ((response.statusCode == 418)) {
          $.failNum += 1
-         $.message .push(`【${name}】：${val}-"签到太频繁啦，请稍后再试"`);
-         console.log(`【${name}】：${val}-"签到太频繁啦，请稍后再试"`);
+         $.message.push(`【${name}】："签到太频繁啦，请稍后再试"`);
+         console.log(`【${name}】："签到太频繁啦，请稍后再试"`);
+         if(debug) console.log(response)
        } else {
          var body = response.body;
          var obj = JSON.parse(body);
@@ -199,26 +198,27 @@ function output() {
          //console.log(result);
          if (result == 1) {
            $.successNum += 1;
-         }
-         else {
+         } else {
            $.failNum += 1;
          }
          if (result == 1) {
-           $.message.push(`【${name}】：${val}-${obj.button.name}`)
-           console.log(`【${name}】：${val}-${obj.button.name}`);
+           $.message.push(`【${name}】：✅${obj.button.name}`)
+           console.log(`【${name}】：${obj.button.name}`);
          } else if (result == 382004) {
-           $.message.push(`【${name}】：${val}-${obj.error_msg}`);
-           console.log(`【${name}】：${val}-${obj.error_msg}`);
+           $.message.push(`【${name}】：✨今天已签到`);
+           console.log(`【${name}】：${obj.error_msg}`);
          } else if (result == 388000) {
            $.message.push(`【${name}】："需要拼图验证⚠️"`);
            console.log(`【${name}】："需要拼图验证⚠️"`);
+           if(debug) console.log(response)
          } else if (result == 382010) {
            $.message.push(`\n【${name}】："超话不存在⚠️"`);
            console.log(`【${name}】："超话不存在⚠️"`);
+           if(debug) console.log(response)
          } else {
            $.message.push(`【${name}】："未知错误⚠️"`);
            console.log(`【${name}】："未知错误⚠️"`);
-           console.log(response)
+           if(debug) console.log(response)
          }
        }
        resolve();
