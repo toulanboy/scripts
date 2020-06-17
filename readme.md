@@ -3,12 +3,16 @@
 > 📌  你的star🌟 就是最大的鼓励。
 
 ### 目前支持
+1、[微博超话](https://github.com/toulanboy/scripts/tree/master/weibo) 
 
-1、[石头读书](https://github.com/toulanboy/scripts/tree/master/stoneread) 每日签到。
 
-2、[小木虫](https://github.com/toulanboy/scripts/tree/master/muchong) 每日签到。
+2、[小木虫](https://github.com/toulanboy/scripts/tree/master/muchong)
 
-3、敬请期待。
+3、[石头读书](https://github.com/toulanboy/scripts/tree/master/stoneread) 
+
+>  石头读书， 2020年06月16日已弃坑。
+
+4、敬请期待。
 
 **欢迎提出issue。如果是非加密参数、非短期cookie，我都会考虑帮忙实现。** 
 
