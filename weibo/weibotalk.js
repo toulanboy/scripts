@@ -15,7 +15,7 @@
   1. 根据你当前的软件，配置好srcipt。 Tips:由于是远程文件，记得顺便更新文件。
   2. 打开微博APP，”我的“， ”超话社区“， ”底部栏--我的“， ”关注“， 弹出通知，提示获取已关注超话链接成功。
   3. 点进一个超话页面，手动签到一次。弹出通知，提示获取超话签到链接成功。 若之前所有已经签到，请关注一个新超话进行签到。
-  4. 回到quanx等软件，关掉获取cookie的 2 个rewrite。（loon是关掉获取cookie的脚本）
+  4. 回到quanx等软件，关掉获取cookie的rewrite。（loon是关掉获取cookie的脚本）
 
   📌 配置第2个账号方法：只需在第1个账号获取cookie结束后。在微博app中切换到第2个号，进行相同的获取逻辑即可。
 
@@ -280,8 +280,8 @@ function checkin(id, name) {
           if (debug) console.log(response)
         } else {
           $.message.push(`【${name}】："未知错误⚠️"`);
-          console.log(`【${name}】："未知错误⚠️"`);
-          if (debug) console.log(response)
+          console.log(`【${name}】："未知错误⚠️ 该请求的返回情况如下"`);
+          console.log(response)
         }
       }
       resolve();
