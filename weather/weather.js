@@ -18,9 +18,9 @@
    天气提醒= type=cron,cronexp="0 6,12,17 * * *",script-path=weather.js,wake-system=true,timeout=600
 
    *************************
-   box配置教程 （测试中，暂别使用）
+   box配置教程 
    *************************
-   1、订阅xxx。
+   1、远程订阅该js文件。  在box中订阅https://raw.githubusercontent.com/toulanboy/scripts/master/toulanboy.boxjs.json
    2、打开https://weather.com/zh-CN/weather/today， 搜索你的城市，然后切换到【每小时】。
    3、复制地址栏的链接填到 box里面的“tlb_weather_url”。
    4、认真检查链接是否正确。。  正确的链接是包含hourbyhour字样的，下述是参考样例！
