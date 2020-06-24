@@ -8,10 +8,11 @@
       {
         "id": "weather-simple",
         "name": "降雨提醒",
+        "keys":["tlb_weather_url"],
         "settings": [
             {
               "id": "tlb_weather_url",
-              "name": "tlb_weather_url",
+              "name": "天气链接（点击填写，可以看到下面的获取教程）",
               "val": "",
               "type": "text",
               "desc": "打开https://weather.com/zh-CN/weather/today， 搜索你的城市，然后切换到【每小时】。复制地址栏的链接填到这"
