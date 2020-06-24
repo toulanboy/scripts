@@ -21,6 +21,14 @@
         "author": "@toulanboy",
         "repo": "https://github.com/toulanboy/scripts/blob/master/weather/weather.js",
         "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weather.png", "https://raw.githubusercontent.com/Orz-3/task/master/weather.png"]
+      },
+      {
+        "id": "weibotalk",
+        "name": "微博超话",
+        "keys": ["evil_tokenurl", "evil_tokencheckinurl", "evil_tokenheaders", "evil_tokencheckinheaders","evil_tokenurl2", "evil_tokencheckinurl2", "evil_tokenheaders2", "evil_tokencheckinheaders2"],
+        "author": "@toulanboy",
+        "repo": "https://github.com/toulanboy/scripts/blob/master/weibo",
+        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png", "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"]
       }
     ]
   }
