@@ -6,7 +6,7 @@
    2、搜索你的城市，然后切换到【每小时】。
    3、复制地址栏的链接填到 第19行的 weather_url。
    4、认真检查链接是否正确。。  正确的链接是和下面的类似的，只是后面的字符串不一样！
-   
+   样例参考：https://weather.com/zh-CN/weather/hourbyhour/l/f6de1330f517758fbcfe51946263fb8485477d27f5ab1e3f2d9f88b0e823f544
    [Loon config]
    cron "0 6,12,17 * * *" script-path=weather.js, timeout=600, tag=天气提醒
    [Quanx config]
@@ -16,7 +16,6 @@
 
 */
 const $ = new Env('⏰ 下雨提醒')
-
 $.weather_url = ""   //这里需要你填
 $.pre_hours = 24 //预测未来24小时，最多48小时
 
