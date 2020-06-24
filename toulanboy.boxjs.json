@@ -9,6 +9,15 @@
         "id": "weather-simple",
         "name": "降雨提醒",
         "keys": ["tlb_weather_url"],
+        "settings": [
+            {
+              "id": "tlb_weather_url",
+              "name": "tlb_weather_url",
+              "val": "",
+              "type": "text",
+              "desc": "打开https://weather.com/zh-CN/weather/today， 搜索你的城市，然后切换到【每小时】。复制地址栏的链接填到这"
+            }
+        ],
         "author": "@toulanboy",
         "repo": "https://github.com/toulanboy/scripts/blob/master/weather/weather.js",
         "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weather.png", "https://raw.githubusercontent.com/Orz-3/task/master/weather.png"]
