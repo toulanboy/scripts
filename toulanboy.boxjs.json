@@ -1,0 +1,17 @@
+{
+    "id": "toulanboy.app.sub",
+    "name": "toulanboy 脚本订阅",
+    "author": "@toulanboy",
+    "icon": "https://avatars0.githubusercontent.com/u/12446619?s=460&v=4",
+    "repo": "https://github.com/toulanboy/scripts",
+    "apps": [
+      {
+        "id": "weather-simple",
+        "name": "降雨提醒",
+        "keys": ["tlb_weather_url"],
+        "author": "@toulanboy",
+        "repo": "https://github.com/toulanboy/scripts/blob/master/weather/weather.js",
+        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weather.png", "https://raw.githubusercontent.com/Orz-3/task/master/weather.png"]
+      }
+    ]
+  }
