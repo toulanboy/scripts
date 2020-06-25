@@ -60,7 +60,13 @@ function getw() {
             }
         }
         $.get(url, (error, response, data) => {
-            if (error) throw new Error(error)
+            if (error) {
+                $.msg($.name, "", "🚫请求出现错误，具体看日志")
+                console.log("🚫请求出现错误，具体如下：")
+                console.log(error)
+                resove()
+                throw new Error(error)
+            }
             body = response.body
             city_name = body.match(/locationCard">.*?locationName--.*?>(.*?)</)
             if (city_name != undefined) {
