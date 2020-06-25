@@ -107,6 +107,7 @@ function getw() {
             else {
                 console.log("🌟 当前降雨概率都不大于50%， 故不弹出系统通知。")
             }
+            resove()
         })
     })
 }
