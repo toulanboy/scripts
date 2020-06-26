@@ -32,36 +32,29 @@
 
 const token = "784a03feb07989d3339dfa41c7eb41777436cbfa";
 
-//监控仓库样例，请修改成你的需求
+//🌟🌟🌟监控仓库样例，请修改成你的需求🌟🌟🌟
 const repositories = [
   {
-    name: "NZW9314 脚本",
-    url: "https://github.com/nzw9314/QuantumultX/tree/master",
-  },
-  {
     name: "ClashX",
-    url: "https://github.com/yichengchen/clashX/releases",
+    url: "https://github.com/yichengchen/clashX/releases",//模板🌟, 监控release
   },
   {
     name: "Chavy 脚本",
+    file_names:["wps"],//路径模板🌟, 监控wps目录
     url: "https://github.com/chavyleung/scripts",
   },
   {
     name: "Qure 图标",
-    url: "https://github.com/Koolson/Qure",
-  },
-  {
-    name: "Orz-mini 图标",
-    url: "https://github.com/Orz-3/mini",
+    url: "https://github.com/Koolson/Qure",//模板🌟, 监控整个仓库
   },
   {
     name: "yichahucha -- 微博广告",
-    file_names: ["wb_ad.js", "wb_launch.js"],//路径模板🌟
+    file_names: ["wb_ad.js", "wb_launch.js"],//路径模板🌟， 监控指定文件
     url: "https://github.com/yichahucha/surge/tree/master",
   },
   {
     name: "NobyDa",
-    file_names: ["JD-DailyBonus/JD_DailyBonus.js", "52pojie-DailyBonus"],//路径模板🌟
+    file_names: ["JD-DailyBonus/JD_DailyBonus.js", "52pojie-DailyBonus"],//路径模板🌟， 监控某目录下的文件 或者 监控指定目录
     url: "https://github.com/NobyDa/Script/tree/master",
   }
 ];
@@ -215,7 +208,7 @@ async function checkUpdate(item) {
           
           paths = parserPath(file_names[i])
           $.log(paths)
-          await findFile(name, file_url, paths, 0)
+          await findFile(name, file_url, paths, 0, url)
         }
       }
     }
@@ -225,7 +218,7 @@ async function checkUpdate(item) {
   }
   return;
 }
-function findFile(name, tree_url, paths, current_pos) {
+function findFile(name, tree_url, paths, current_pos, jump_url) {
   
   if (current_pos == paths.length) {
     $.notify(`🐬 [${name}]`, "", `🚫 仓库中没有该文件：${paths[paths.length-1]}`);
@@ -242,14 +235,14 @@ function findFile(name, tree_url, paths, current_pos) {
         if (file_list[i].path == paths[current_pos]) {
 
           fileType = file_list[i].type
-          isDir = paths[current_pos].match(/\.js/) == null ? true : false;
+          isDir = paths[current_pos].match(/\.(js|py|cpp|c|cpp|html|css|jar|png|jpg|bmp|exe)/) == null ? true : false;
           $.log(`🔍正在判断：${paths[current_pos]} is a ${isDir?"directory":"file"}`)
           if (current_pos == paths.length - 1 && fileType == 'blob' && !isDir) {
             isFind = true;
             let file_hash = file_list[i].sha;
             let last_sha = $.read(hash(name + paths[current_pos]));
             if (file_hash != last_sha) {
-              $.notify(`🐬 [${name}]`, "", `📌 ${paths[current_pos]}有更新`);
+              $.notify(`🐬 [${name}]`, "", `📌 ${paths[current_pos]}有更新`,jump_url);
               $.write(file_hash, hash(name + paths[current_pos]));
             }
             $.log(
@@ -261,7 +254,7 @@ function findFile(name, tree_url, paths, current_pos) {
             let file_hash = file_list[i].sha;
             let last_sha = $.read(hash(name + paths[current_pos]));
             if (file_hash != last_sha) {
-              $.notify(`🐬 [${name}]`, "", `📌 ${paths[current_pos]}有更新`);
+              $.notify(`🐬 [${name}]`, "", `📌 ${paths[current_pos]}有更新`, jump_url);
               $.write(file_hash, hash(name + paths[current_pos]));
             }
             $.log(
@@ -270,7 +263,7 @@ function findFile(name, tree_url, paths, current_pos) {
           } else if (fileType == 'tree') {
             isFind = true;
             tree_url = file_list[i].url
-            findFile(name, tree_url, paths, current_pos + 1)
+            findFile(name, tree_url, paths, current_pos + 1, jump_url)
           }
         }
 
