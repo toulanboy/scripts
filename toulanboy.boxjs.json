@@ -8,11 +8,11 @@
       {
         "id": "weather-simple",
         "name": "降雨提醒",
-        "keys": [],
+        "keys": ["tlb_weather_url"],
         "settings": [
             {
               "id": "tlb_weather_url",
-              "name": "tlb_weather_url",
+              "name": "天气链接",
               "val": "",
               "type": "text",
               "placeholder":"这里填天气链接",
