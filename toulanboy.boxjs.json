@@ -8,25 +8,26 @@
       {
         "id": "weather-simple",
         "name": "降雨提醒",
-        "keys": ["tlb_weather_url"],
+        "keys": [],
         "settings": [
             {
               "id": "tlb_weather_url",
               "name": "tlb_weather_url",
               "val": "",
               "type": "text",
+              "placeholder":"这里填天气链接",
               "desc": "打开https://weather.com/zh-CN/weather/today， 搜索你的城市，然后切换到【每小时】。复制地址栏的链接填到这"
             }
         ],
         "author": "@toulanboy",
-        "repo": "https://github.com/toulanboy/scripts/blob/master/weather/weather.js",
+        "repo": "https://github.com/toulanboy/scripts/blob/master/weather",
         "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weather.png", "https://raw.githubusercontent.com/Orz-3/task/master/weather.png"]
       },
       {
         "id": "weibotalk",
         "name": "微博超话",
         "keys": ["evil_tokenurl", "evil_tokencheckinurl", "evil_tokenheaders", "evil_tokencheckinheaders","evil_tokenurl2", "evil_tokencheckinurl2", "evil_tokenheaders2", "evil_tokencheckinheaders2"],
-        "author": "@toulanboy",
+        "author": "@toulanboy, @evilbutcher",
         "repo": "https://github.com/toulanboy/scripts/blob/master/weibo",
         "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png", "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"]
       }
