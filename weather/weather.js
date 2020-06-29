@@ -33,7 +33,7 @@ $.pre_hours = 24     //预测未来24小时，最多48小时
 
 !(async () => {
     $.log('', `🔔 ${$.name}, 开始!`, '')
-    $.msg($.name, "🚫暂停使用【长按查看具体说明】", "😭这是基于爬虫拿来的数据，网站有反爬虫策略，偶尔出现请求超时的问题。\n🌧而这会导致使得quanx或者loon重启，不建议同学们继续使用。\n🌟后续会尝试找稳定的天气接口，有需要的小伙伴可以点击此通知关注github。", "https://github.com/toulanboy/scripts")
+    $.msg($.name, "🚫暂停使用【长按查看具体说明】", "😭这是基于爬虫拿来的数据，网站有反爬虫策略，偶尔出现请求超时的问题。\n🌧而这会导致quanx或者loon重启，建议同学们换用其他大佬的天气脚本。\n🙁后续会尝试找稳定的天气接口，有需要的小伙伴可以点击此通知关注github。\n\t凌晨2点，辣鸡toulanboy", "https://github.com/toulanboy/scripts")
     return
     if ($.weather_url == "") {
         $.weather_url = $.getdata('tlb_weather_url')
