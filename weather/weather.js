@@ -94,7 +94,7 @@ function getw() {
         }
         $.get(url, (error, response, data) => {
             if (error) {
-                $.msg($.name, "", "🚫请求出现错误，具体看日志")
+                // $.msg($.name, "", "🚫请求出现错误，具体看日志")
                 console.log("🚫请求出现错误，具体如下：")
                 console.log(error)
                 resolve()
