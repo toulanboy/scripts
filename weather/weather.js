@@ -10,6 +10,7 @@
    3、复制地址栏的链接填到 第30行的 weather_url。
    4、认真检查链接是否正确。。  正确的链接是包含hourbyhour字样的，下述是参考样例！
    样例参考：https://weather.com/zh-CN/weather/hourbyhour/l/f6de1330f517758fbcfe51946263fb8485477d27f5ab1e3f2d9f88b0e823f544
+   
    [Loon config]
    cron "0 6,12,17 * * *" script-path=weather.js, timeout=600, tag=天气提醒
    [Quanx config]
@@ -18,7 +19,7 @@
    天气提醒= type=cron,cronexp="0 6,12,17 * * *",script-path=weather.js,wake-system=true,timeout=600
 
    *************************
-   box配置教程 
+   BoxJs配置教程 
    *************************
    1、远程订阅该js文件。  在box中订阅https://raw.githubusercontent.com/toulanboy/scripts/master/toulanboy.boxjs.json
    2、打开https://weather.com/zh-CN/weather/today， 搜索你的城市，然后切换到【每小时】。
@@ -27,19 +28,39 @@
    样例参考：https://weather.com/zh-CN/weather/hourbyhour/l/f6de1330f517758fbcfe51946263fb8485477d27f5ab1e3f2d9f88b0e823f544
 */
 const $ = new Env('⏰ 下雨提醒')
-$.weather_url = ""   //这里需要你填。  box用户请在box里面修改变量。
+$.weather_url = ""   //这里需要你填。支持在boxjs中设置。
 $.pre_hours = 24     //预测未来24小时，最多48小时
+$.timeout = 2000     //超时限制，单位ms
+$.always_notify = false
 
+if ($.weather_url == "" && $.getdata('tlb_weather_url') != undefined && $.getdata('tlb_weather_url') != "") {
+    $.weather_url = $.getdata('tlb_weather_url')
+}
+if ($.getdata('tlb_pre_hours') != undefined && $.getdata('tlb_pre_hours') != "") {
+    $.pre_hours = $.getdata('tlb_pre_hours') * 1
+    if ($.pre_hours > 48) {
+        $.pre_hours = 48
+        $.setdata(48, 'tlb_pre_hours')
+    }
+}
+if ($.getdata('tlb_rain_timeout') != undefined && $.getdata('tlb_rain_timeout') != "") {
+    $.timeout = $.getdata('tlb_rain_timeout') * 1
+    if ($.timeout > 4000) {
+        $.timeout = 4000
+        $.setdata(4000, 'tlb_rain_timeout')
+    }
+}
+if ($.getdata('tlb_always_notify') != undefined) {
+    if ($.getdata('tlb_always_notify') == true || $.getdata('tlb_always_notify') == 'true')
+        $.always_notify = true
+    else if ($.getdata('tlb_always_notify') == false || $.getdata('tlb_always_notify') == 'false')
+        $.always_notify = false
+}
 
 !(async () => {
     $.log('', `🔔 ${$.name}, 开始!`, '')
-    $.msg($.name, "🚫暂停使用【长按查看具体说明】", "😭这是基于爬虫拿来的数据，网站有反爬虫策略，偶尔出现请求超时的问题。\n🌧而这会导致quanx或者loon重启，建议同学们换用其他大佬的天气脚本。\n🙁后续会尝试找稳定的天气接口，有需要的小伙伴可以点击此通知关注github。\n\t\t\t凌晨2点，辣鸡toulanboy", "https://github.com/toulanboy/scripts")
-    return
-    if ($.weather_url == "") {
-        $.weather_url = $.getdata('tlb_weather_url')
-    }
     if ($.weather_url == undefined || $.weather_url == "" || $.weather_url.match(/hourbyhour/) == undefined || $.weather_url.match(/^https:.*?/) == undefined) {
-        $.msg($.name, "", "🚫启动失败，请配置weather_url，具体配置过程请阅读js文件！！！")
+        $.msg($.name, "", "🚫启动失败，请配置weather_url，具体配置过程请阅读js文件。")
         $.done()
         return
     }
@@ -52,13 +73,27 @@ $.pre_hours = 24     //预测未来24小时，最多48小时
 .finally(() => {
     $.log('', `🔔 ${$.name}, 结束!`, ''), $.done()
 })
-
+function random_num(min_num,max_num){ 
+    switch(arguments.length){ 
+        case 1: 
+            return parseInt(Math.random()*min_num+1,10); 
+        break; 
+        case 2: 
+            return parseInt(Math.random()*(max_num-min_num+1)+min_num,10); 
+        break; 
+            default: 
+                return 0; 
+            break; 
+    } 
+}
 function getw() {
-    return new Promise((resove) => {
+    return new Promise((resolve) => {
+        agent_rand = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_${random_num(11,15)}_${random_num(1,5)}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${random_num(70,83)}.0.${random_num(2000,4000)}.${random_num(1,200)} Safari/537.36`
+        console.log(agent_rand)
         url = {
             url: $.weather_url,
             headers: {
-                'user-agent':`Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36`,
+                'user-agent':agent_rand,
             }
         }
         $.get(url, (error, response, data) => {
@@ -66,7 +101,7 @@ function getw() {
                 $.msg($.name, "", "🚫请求出现错误，具体看日志")
                 console.log("🚫请求出现错误，具体如下：")
                 console.log(error)
-                resove()
+                resolve()
                 throw new Error(error)
             }
             body = response.body
@@ -110,13 +145,19 @@ function getw() {
                 }
                 count++
             }
-            if(is_notify)
+            if ($.always_notify || is_notify){
+                if(!is_notify) $.message += "🌟 当前降雨概率都不大于50%\n"
                 $.msg(`${$.name}:${$.city_name}`, ``, $.message)
+            }
             else {
                 console.log("🌟 当前降雨概率都不大于50%， 故不弹出系统通知。")
             }
-            resove()
+            resolve()
         })
+        setTimeout(() => {
+                console.log("🚨 请求超时，退出程序。")
+                resolve()
+            }, $.timeout);
     })
 }
 // prettier-ignore, @chavyleung
