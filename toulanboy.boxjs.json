@@ -7,7 +7,7 @@
     "apps": [
       {
         "id": "weather-simple",
-        "name": "降雨提醒",
+        "name": "下雨提醒",
         "keys": ["tlb_weather_url"],
         "settings": [
             { "id": "tlb_always_notify", "name": "所有情况都弹出通知（默认是降雨概率大于50%才弹）", "val": false, "type": "boolean", "desc": "默认是降雨概率大于50%才弹出通知" },

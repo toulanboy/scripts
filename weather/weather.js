@@ -2,30 +2,26 @@
    🐬@toulanboy
    📕更新地址：https://github.com/toulanboy/scripts
 
-   *************************
-   Loon, surge, quanx配置教程
-   *************************
-   1、下载脚本到本地， 打开https://weather.com/zh-CN/weather/today。
-   2、搜索你的城市，然后切换到【每小时】。
-   3、复制地址栏的链接填到 第30行的 weather_url。
-   4、认真检查链接是否正确。。  正确的链接是包含hourbyhour字样的，下述是参考样例！
+   *********************************************
+   Loon, surge, quanx配置教程（建议使用BoxJs修改变量）
+   *********************************************
+   1️⃣Box用户：远程订阅该js脚本。     非Box用户：请下载到本地使用。
+   2️⃣Box用户：在BoxJs中订阅https://raw.githubusercontent.com/toulanboy/scripts/master/toulanboy.boxjs.json
+   3️⃣打开https://weather.com/zh-CN/weather/today， 搜索你的城市，然后切换到【每小时】。
+   4️⃣Box用户将 地址栏的链接填到 box里面的“tlb_weather_url”。  非Box用户：请填在第24行。
+   5️⃣认真检查链接是否正确。正确的链接是包含hourbyhour字样的，下述是参考样例！
    样例参考：https://weather.com/zh-CN/weather/hourbyhour/l/f6de1330f517758fbcfe51946263fb8485477d27f5ab1e3f2d9f88b0e823f544
    
-   [Loon config]
-   cron "0 6,12,17 * * *" script-path=weather.js, timeout=600, tag=天气提醒
-   [Quanx config]
-   0 6,12,17 * * * weather.js, tag=天气提醒
-   [surge config]
-   天气提醒= type=cron,cronexp="0 6,12,17 * * *",script-path=weather.js,wake-system=true,timeout=600
+   💢【强烈建议】，增加一条分流规则：
+   host-suffix, weather.com, proxy
 
-   *************************
-   BoxJs配置教程 
-   *************************
-   1、远程订阅该js文件。  在box中订阅https://raw.githubusercontent.com/toulanboy/scripts/master/toulanboy.boxjs.json
-   2、打开https://weather.com/zh-CN/weather/today， 搜索你的城市，然后切换到【每小时】。
-   3、复制地址栏的链接填到 box里面的“tlb_weather_url”。
-   4、认真检查链接是否正确。。  正确的链接是包含hourbyhour字样的，下述是参考样例！
-   样例参考：https://weather.com/zh-CN/weather/hourbyhour/l/f6de1330f517758fbcfe51946263fb8485477d27f5ab1e3f2d9f88b0e823f544
+   [Loon config]
+   cron "0 6,12,17 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weather/weather.js, tag=下雨提醒
+   [Quanx config]
+   0 6,12,17 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/weather/weather.js, img-url=https://raw.githubusercontent.com/Orz-3/task/master/weather.png, tag=下雨提醒
+   [surge config]
+   下雨提醒= type=cron,cronexp="0 6,12,17 * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weather/weather.js, wake-system=true
+
 */
 const $ = new Env('⏰ 下雨提醒')
 $.weather_url = ""   //这里需要你填。支持在boxjs中设置。
