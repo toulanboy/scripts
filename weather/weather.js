@@ -28,7 +28,7 @@ $.weather_url = ""   //这里需要你填。支持在boxjs中设置。
 $.pre_hours = 24     //预测未来24小时，最多48小时
 $.timeout = 2000     //超时限制，单位ms
 $.always_notify = false
-
+$.rain_test = false
 if ($.weather_url == "" && $.getdata('tlb_weather_url') != undefined && $.getdata('tlb_weather_url') != "") {
     $.weather_url = $.getdata('tlb_weather_url')
 }
@@ -52,9 +52,18 @@ if ($.getdata('tlb_always_notify') != undefined) {
     else if ($.getdata('tlb_always_notify') == false || $.getdata('tlb_always_notify') == 'false')
         $.always_notify = false
 }
-
+if ($.getdata('tlb_rain_test') != undefined) {
+    if ($.getdata('tlb_rain_test') == true || $.getdata('tlb_rain_test') == 'true')
+        $.rain_test = true
+    else if ($.getdata('tlb_rain_test') == false || $.getdata('tlb_rain_test') == 'false')
+        $.rain_test = false
+}
 !(async () => {
     $.log('', `🔔 ${$.name}, 开始!`, '')
+    if (!$.rain_test) {
+        $.msg($.name, "🚫暂停使用【长按查看具体说明】", "😭目前偶尔出现请求超时的问题。\n🌧而这会导致quanx或者loon重启，建议同学们换用其他大佬的天气脚本。\n🙁后续会尝试找稳定的天气接口，有需要的小伙伴可以点击此通知关注github。", "https://github.com/toulanboy/scripts")
+        return
+    }
     if ($.weather_url == undefined || $.weather_url == "" || $.weather_url.match(/hourbyhour/) == undefined || $.weather_url.match(/^https:.*?/) == undefined) {
         $.msg($.name, "", "🚫启动失败，请配置weather_url，具体配置过程请阅读js文件。")
         $.done()
@@ -68,6 +77,7 @@ if ($.getdata('tlb_always_notify') != undefined) {
 })
 .finally(() => {
     $.log('', `🔔 ${$.name}, 结束!`, ''), $.done()
+    return
 })
 function random_num(min_num,max_num){ 
     switch(arguments.length){ 
