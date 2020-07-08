@@ -85,7 +85,7 @@ function random_num(min_num,max_num){
 function getw() {
     return new Promise((resolve) => {
         agent_rand = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_${random_num(11,15)}_${random_num(1,5)}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${random_num(70,83)}.0.${random_num(2000,4000)}.${random_num(1,200)} Safari/537.36`
-        console.log(agent_rand)
+        // console.log(agent_rand) 
         url = {
             url: $.weather_url,
             headers: {
@@ -151,7 +151,7 @@ function getw() {
             resolve()
         })
         setTimeout(() => {
-                console.log("🚨 请求超时，退出程序。")
+                console.log("🚨 请求已达时间上限，自动退出。")
                 resolve()
             }, $.timeout);
     })
