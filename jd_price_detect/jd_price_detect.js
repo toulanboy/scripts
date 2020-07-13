@@ -8,8 +8,8 @@
   【配置步骤，请认真阅读】
   *************************
   1. 根据你当前的软件，配置好srcipt。 Tips:由于是远程文件，记得顺便更新文件。
-  2. 打开“慢慢买”app，点击左上角的“查历史价”，然后随便查询一件京东自营的商品。弹出通知后，就拿到cookie了，这时候请回去关闭重写。
-  3. 前往boxjs，填写你需要监控的京东链接和目标价格。请注意，链接和价格必须成对填写，缺一不可。（后期有空再加强容错性）
+  2. 打开“慢慢买”app，【不用登陆app】，点击左上角的“查历史价”，然后随便查询一件京东自营的商品。弹出通知后，就拿到cookie了，这时候请回去关闭重写。
+  3. 前往boxjs，填写你需要监控的京东链接和目标价格。请注意，链接和价格必须成对填写，缺一不可。
   
   请注意： 如果检测价格 高于 目标价格，则不会通知！但是日志里面有输出。
 
@@ -35,7 +35,6 @@
   [MITM]
   hostname = apapia-history.manmanbuy.com
 
-
   *************************
   【Surge 4.2+ 脚本配置】
   *************************
@@ -46,7 +45,6 @@
   hostname = apapia-history.manmanbuy.com
 
   *********/
-
 
 const $ = new Env('⏰ 京东价格提醒')
 
@@ -80,8 +78,12 @@ function env_detect(){
         $.msg($.name, "", "🚫请前往BoxJs进行配置。")
         return false;
     }
+    if ($.detect_url.length != $.target_price.length) {
+        $.msg($.name, "", "🚫客官，商品链接和目标价格是成对填写的。麻烦请前往BoxJs补充完整。")
+        return false;
+    }
     if($.headers == undefined || $.headers == "" || $.body == undefined || $.body == ""){
-        $.msg($.name, "", "🚫请前往慢慢买app进行配置。配置过程看js说明！\n注意，不要登录慢慢买账号！")
+        $.msg($.name, "", "🚫请前往慢慢买app获取cookie。配置过程看js说明！\n注意，不要登录慢慢买账号！")
         return false;
     }
     return true;
