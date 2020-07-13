@@ -19,6 +19,14 @@
         "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png", "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"]
       },
       {
+        "id": "muchong",
+        "name": "小木虫论坛",
+        "keys": ["muchong_headers"],
+        "author": "@toulanboy",
+        "repo": "https://github.com/toulanboy/scripts/blob/master/muchong",
+        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/muchong.png", "https://raw.githubusercontent.com/Orz-3/task/master/muchong.png"]
+      },
+      {
         "id": "weather-simple",
         "name": "下雨提醒",
         "keys": ["tlb_weather_url"],
