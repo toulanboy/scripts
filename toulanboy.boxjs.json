@@ -34,6 +34,8 @@
             
             { "id": "tlb_jd_timeout", "name": "[debug]请求超时限制 (毫秒)", "val": 3000, "type": "text", "desc": "" },
             { "id": "tlb_jd_debug", "name": "[debug]打开debug", "val": false, "type": "boolean", "desc": "debug功能开关"},
+            { "id": "tlb_jd_public", "name": "[debug]使用公共API", "val": false, "type": "boolean", "desc": ""},
+            
             { "id": "tlb_jd_detect_days", "name": "[Todo]监控时长(天数)", "val": 7, "type": "text", "desc": "Todo: 到期后自动删除商品链接" }
             
         ],

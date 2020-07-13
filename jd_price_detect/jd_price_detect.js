@@ -53,6 +53,7 @@ const $ = new Env('⏰ 京东价格提醒')
 $.detect_days = 7
 $.timeout = 3000 //超时限制，单位ms
 $.debug = false
+$.public = false
 
 !(async () => {
     $.log('', `🔔 ${$.name}, 开始!`, '')
@@ -114,10 +115,17 @@ function get_setting() {
     if ($.getdata('tlb_jd_detect_price3') != undefined && $.getdata('tlb_jd_detect_price3') != "") $.target_price.push($.getdata('tlb_jd_detect_price3') * 1)
 
     $.debug = JSON.parse($.getdata("tlb_jd_debug") || $.debug);
+    $.public = JSON.parse($.getdata("tlb_jd_public") || $.public);
     $.detect_days = $.getdata("tlb_jd_detect_days") * 1 || $.detect_days;
     $.timeout = $.getdata("tlb_jd_timeout") * 1 || $.timeout;
-    $.headers = $.getdata('tlb_jd_headers')
-    $.body = $.getdata('tlb_jd_body')
+    if($.public){
+        $.headers = "{\"Cookie\":\"jjkcpnew111=cp50214606_183261029_2020/4/26\",\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Content-Length\":\"516\",\"Accept-Language\":\"zh-cn\"}"
+        $.body = "methodName=getHistoryTrend&jsoncallback=%3F&p_url=loveyou&qs=true&bj=false&jgzspic=no&callPos=trend_detail&t=1594629654371&username=&u_name=&sign=&c_appver=3.3.71&c_ostype=ios&c_osver=13.5&c_devid=D4AF7FA0-FFE5-45C4-B62E-ECE59DDE3243&c_patch=&c_devmodel=iPhone%20X&c_brand=Apple&c_operator=%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8&c_ctrl=TrendDetailScene&c_win=w_414_h_896&c_dp=1&c_safearea=44_34&c_firstchannel=AppStore&c_firstquerendate=1590462500717&c_channel=AppStore"
+    }
+    else{
+        $.headers = $.getdata('tlb_jd_headers')
+        $.body = $.getdata('tlb_jd_body')
+    }
 }
 
 function get_price(goods_url, target_price) {
