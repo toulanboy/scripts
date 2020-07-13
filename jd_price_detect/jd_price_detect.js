@@ -8,20 +8,10 @@
   【配置步骤，请认真阅读】
   *************************
   1. 根据你当前的软件，配置好srcipt。 Tips:由于是远程文件，记得顺便更新文件。
-  2. 打开“慢慢买”app，点击左上角的“查历史价”，然后随便查询一件商品。弹出通知后，就拿到cookie了，这时候请回去关闭重写。
+  2. 打开“慢慢买”app，点击左上角的“查历史价”，然后随便查询一件京东自营的商品。弹出通知后，就拿到cookie了，这时候请回去关闭重写。
   3. 前往boxjs，填写你需要监控的京东链接和目标价格。请注意，链接和价格必须成对填写，缺一不可。（后期有空再加强容错性）
   
   请注意： 如果检测价格 高于 目标价格，则不会通知！但是日志里面有输出。
-
-
-  *************************
-  【Surge 4.2+ 脚本配置】
-  *************************
-  京东价格提醒cookie获取 = type=http-request,pattern=https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,requires-body=true
-  京东价格提醒 = type=cron,cronexp="5 0 * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,wake-system=true,timeout=600
-
-  [MITM]
-  hostname = apapia-history.manmanbuy.com
 
   *************************
   【Loon 2.1+ 脚本配置】
@@ -41,6 +31,16 @@
 
   [task]
   5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
+
+  [MITM]
+  hostname = apapia-history.manmanbuy.com
+
+
+  *************************
+  【Surge 4.2+ 脚本配置】
+  *************************
+  京东价格提醒cookie获取 = type=http-request,pattern=https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,requires-body=true
+  京东价格提醒 = type=cron,cronexp="5 0 * * *",script-path=^https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,wake-system=true,timeout=600
 
   [MITM]
   hostname = apapia-history.manmanbuy.com
@@ -126,7 +126,7 @@ function get_price(goods_url, target_price) {
             if($.debug) console.log(url1)
             $.post(url1, (error, response, data) => {
                 if (error) {
-                    if (debug) $.msg($.name, "", "🚫请求出现错误，具体看日志")
+                    if ($.debug) $.msg($.name, "", "🚫请求出现错误，具体看日志")
                     console.log("🚫请求出现错误，具体如下：")
                     console.log(error)
                     resolve()
