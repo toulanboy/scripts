@@ -62,10 +62,7 @@ $.debug = false
         return
     }
     get_setting()
-    if ($.detect_url.length == 0) {
-        $.msg($.name, "", "🚫请前往BoxJs进行配置。")
-        return
-    }
+    if(!env_detect()) return
     for (var i in $.detect_url)
         await get_price($.detect_url[i], $.target_price[i])
     $.done()
@@ -77,12 +74,22 @@ $.debug = false
     $.log('', `🔔 ${$.name}, 结束!`, '')
     return
 })
-
+function env_detect(){
+    if ($.detect_url.length == 0) {
+        $.msg($.name, "", "🚫请前往BoxJs进行配置。")
+        return false;
+    }
+    if($.headers == undefined || $.headers == "" || $.body == undefined || $.body == ""){
+        $.msg($.name, "", "🚫请前往慢慢买app进行配置。配置过程看js说明！\n注意，不要登录慢慢买账号！")
+        return false;
+    }
+    return true;
+}
 function get_cookie() {
     headers = $request.headers
     body = $request.body
-    if (body.indexOf('getHistoryTrend') != -1) {
-        body = body.replace(/qs=(true|false)/, 'qs=true').replace(/bj=(true|false)/, 'bj=false').replace(/p_url=.*?&/, "p_url=loveyou&")
+    if (body.indexOf('getHistoryTrend') != -1 && body.indexOf('qs=true') != -1 && body.indexOf('bj=false') != -1) {
+        body = body.replace(/p_url=.*?&/, "p_url=loveyou&")
         $.setdata(JSON.stringify($request.headers), 'tlb_jd_headers')
         $.setdata(body, 'tlb_jd_body')
         $.msg($.name, '', '✅获取会话成功，该重写可以关闭了')
@@ -160,7 +167,7 @@ function get_price(goods_url, target_price) {
             resolve()
         }
         setTimeout(() => {
-            console.log("🚨 (防长时间堵塞用)请求已达时间上限，已释放某函数。")
+            if($.debug) console.log("🚨 (防长时间堵塞用)请求已达时间上限，已释放某函数。")
             resolve()
         }, $.timeout);
     })
