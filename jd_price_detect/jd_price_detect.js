@@ -28,7 +28,7 @@
   *************************
   [script]
   cron "5 0 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
-  http-request https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,requires-body=true, tag=京东价格提醒cookie获取
+  ^http-request https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,requires-body=true, tag=京东价格提醒cookie获取
   
   [MITM]
   hostname = apapia-history.manmanbuy.com
@@ -37,7 +37,7 @@
   【 QX 1.0.10+ 脚本配置 】 
   *************************
   [rewrite_local]
-  https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx url script-request-body https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js
+  ^https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx url script-request-body https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js
 
   [task]
   5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
@@ -54,28 +54,29 @@ $.detect_days = 7
 $.timeout = 3000 //超时限制，单位ms
 $.debug = false
 
-    !(async () => {
-        $.log('', `🔔 ${$.name}, 开始!`, '')
-        if (typeof $request != "undefined") {
-            get_cookie()
-            return
-        }
-        get_setting()
-        if ($.detect_url.length == 0) {
-            $.msg($.name, "", "🚫请前往BoxJs进行配置。")
-            return
-        }
-        for (var i in $.detect_url)
-            await get_price($.detect_url[i], $.target_price[i])
-        $.done()
-    })()
-    .catch((e) => {
-        $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-        $.log('', `🔔 ${$.name}, 结束!`, '')
+!(async () => {
+    $.log('', `🔔 ${$.name}, 开始!`, '')
+    if (typeof $request != "undefined") {
+        console.log($request.url)
+        get_cookie()
         return
-    })
+    }
+    get_setting()
+    if ($.detect_url.length == 0) {
+        $.msg($.name, "", "🚫请前往BoxJs进行配置。")
+        return
+    }
+    for (var i in $.detect_url)
+        await get_price($.detect_url[i], $.target_price[i])
+    $.done()
+})()
+.catch((e) => {
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+})
+.finally(() => {
+    $.log('', `🔔 ${$.name}, 结束!`, '')
+    return
+})
 
 function get_cookie() {
     headers = $request.headers
@@ -115,11 +116,14 @@ function get_setting() {
 function get_price(goods_url, target_price) {
     return new Promise((resolve) => {
         try {
+            // console.log(goods_url)
             url1 = {
                 url: `https://apapia-history.manmanbuy.com/ChromeWidgetServices/WidgetServices.ashx`,
                 headers: $.headers
             }
-            url1.body = $.body.replace(/t=\d*?&/, `t=${new Date().getTime()}&`).replace(/p_url=loveyou/, `p_url=${encodeURIComponent(goods_url)}`)
+            current_t = new Date().getTime()
+            url1.body = $.body.replace(/t=\d*?&/, `t=${current_t}&`).replace(/p_url=loveyou/, `p_url=${encodeURIComponent(goods_url)}`)
+            if($.debug) console.log(url1)
             $.post(url1, (error, response, data) => {
                 if (error) {
                     if (debug) $.msg($.name, "", "🚫请求出现错误，具体看日志")
@@ -127,14 +131,23 @@ function get_price(goods_url, target_price) {
                     console.log(error)
                     resolve()
                 }
-                if ($.debug) console.log(response)
+                if ($.debug) console.log(response.body)
                 data = JSON.parse(response.body)
                 title = data.single.title
                 youhui = data.single.currentPriceyhStatus
-                price_status = eval(data.single.jiagequshiyh.match(/.*(\[.*?\])$/)[1])
+                price_status_new = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[2])
+                price_status_old = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[1])
+                if(price_status_new < current_t){
+                    price_status = price_status_new;
+                }
+                else{
+                    console.log("🤣返回的数据存在干扰，已切回到第2新的数据")
+                    price_status = price_status_old;
+                }
                 result = `✨最新价格：${price_status[1]}元，已低于目标价格：${target_price}元。\n`
                 result += `✨价格状态：${youhui}。\n`
-                if (price_status[2] != "") result += `✨最新优惠：${price_status[1]}\n`
+                if ($.debug) console.log(price_status)
+                if (price_status[2] != "") result += `✨最新优惠：${price_status[2]}\n`
                 if (price_status[1] <= target_price)
                     $.msg($.name, `商品：${title}`, result)
                 else {
