@@ -39,8 +39,8 @@
   *************************
   【Surge 4.2+ 脚本配置】
   *************************
-  京东价格提醒cookie获取 = type=http-request,pattern=https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,requires-body=true
-  京东价格提醒 = type=cron,cronexp="5 0 * * *",script-path=^https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,wake-system=true,timeout=600
+  京东价格提醒cookie获取 = type=http-request,pattern=^https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,requires-body=true
+  京东价格提醒 = type=cron,cronexp="5 0 * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,wake-system=true,timeout=600
 
   [MITM]
   hostname = apapia-history.manmanbuy.com
