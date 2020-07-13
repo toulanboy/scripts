@@ -165,6 +165,7 @@ function init_env(current) {
   $.failNum = 0
   $.allnumber = 0;
   $.pagenumber = 0;
+  $.stopNum = 0;
   if (current == 2) {
     listurl = listurl2
     listheaders = listheaders2
