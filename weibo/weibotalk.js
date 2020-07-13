@@ -136,8 +136,14 @@ var checkinheaders2 = $.getdata(tokencheckinheaders2);
       await getid(i);
     }
     for (var i in $.name_list) {
-      await checkin($.id_list[i], $.name_list[i]);
-      $.wait($.time)
+      if ($.stopNum < 10) {
+        await checkin($.id_list[i], $.name_list[i]);
+        $.wait($.time);
+      } else {
+        $.message.push(`🚨检测到Cookie失效，脚本已自动停止`);
+        console.log(`🚨检测到Cookie失效，脚本已自动停止`);
+        break;
+      }
     }
     output(current)
   }
@@ -159,6 +165,7 @@ function init_env(current) {
   $.failNum = 0
   $.allnumber = 0;
   $.pagenumber = 0;
+  $.stopNum = 0;
   if (current == 2) {
     listurl = listurl2
     listheaders = listheaders2
@@ -282,7 +289,7 @@ function checkin(id, name) {
         //console.log(obj);
         var result = obj.result;
         //console.log(result);
-        if (result == 1) {
+        if (result == 1 || result == 382004) {
           $.successNum += 1;
         } else {
           $.failNum += 1;
@@ -301,6 +308,12 @@ function checkin(id, name) {
           $.message.push(`\n【${name}】："超话不存在⚠️"`);
           console.log(`【${name}】："超话不存在⚠️"`);
           if (debug) console.log(response)
+        } else if (obj["errno"] == -100) {
+          $.stopNum += 1;
+          $.message.push(`【${idname}】：签到失败，请重新签到获取Cookie⚠️`);
+          console.log(
+            `【${idname}】执行签到：签到失败，请重新签到获取Cookie⚠️`
+          );
         } else {
           $.message.push(`【${name}】："未知错误⚠️"`);
           console.log(`【${name}】："未知错误⚠️ 该请求的返回情况如下"`);
