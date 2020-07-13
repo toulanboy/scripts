@@ -21,7 +21,7 @@
       {
         "id": "jd_price_detect",
         "name": "京东价格提醒（测试中）",
-        "keys": ["tlb_jd_headers", "tlb_jd_body", "tlb_jd_timeout", "tlb_jd_debug","tlb_jd_detect_url", "tlb_jd_detect_days"],
+        "keys": ["tlb_jd_headers", "tlb_jd_body", "tlb_jd_timeout", "tlb_jd_debug", "tlb_jd_public", "tlb_jd_detect_days"],
         "settings": [
             { "id": "tlb_jd_detect_url", "name": "商品链接A", "val": "", "type": "text", "placeholder":"请在商品页获取分享链接", "desc": "请在商品页获取分享链接" },
             { "id": "tlb_jd_detect_price", "name": "商品链接A 目标价格", "val": "", "type": "text", "placeholder":"若商品A低于该价格，则会提醒。", "desc": "若商品A低于该价格，则会提醒。【只填数字】" },
@@ -36,7 +36,7 @@
             { "id": "tlb_jd_debug", "name": "[debug]打开debug", "val": false, "type": "boolean", "desc": "debug功能开关"},
             { "id": "tlb_jd_public", "name": "[debug]使用公共API", "val": false, "type": "boolean", "desc": ""},
             
-            { "id": "tlb_jd_detect_days", "name": "[Todo]监控时长(天数)", "val": 7, "type": "text", "desc": "Todo: 到期后自动删除商品链接" }
+            { "id": "tlb_jd_detect_days", "name": "[Todo]监控时长(天数)", "val": "暂没实现", "type": "text", "desc": "Todo: 到期后自动删除商品链接" }
             
         ],
         "author": "@toulanboy",
