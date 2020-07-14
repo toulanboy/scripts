@@ -19,7 +19,7 @@
         "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png", "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"]
       },
       {
-        "id": "jd_price",
+        "id": "jd_price_detect",
         "name": "京东价格提醒",
         "keys": ["tlb_jd_headers", "tlb_jd_body", "tlb_jd_timeout", "tlb_jd_debug", "tlb_jd_public", "tlb_jd_detect_days"],
         "settings": [

@@ -47,181 +47,181 @@
 
   *********/
 
-const $ = new Env('⏰ 京东价格提醒')
+ const $ = new Env('⏰ 京东价格提醒')
 
-// $.detect_days = 7
-$.timeout = 3000 //超时限制，单位ms
-$.debug = false
-$.public = false
-
-!(async () => {
-    $.log('', `🔔 ${$.name}, 开始!`, '')
-    if (typeof $request != "undefined") {
-        console.log($request.url)
-        get_cookie()
-        return
-    }
-    get_setting()
-    if(!env_detect()) return
-    for (var i in $.detect_url)
-        await get_price($.detect_url[i], $.target_price[i])
-    $.done()
-})()
-.catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-})
-.finally(() => {
-    $.log('', `🔔 ${$.name}, 结束!`, '')
-    return
-})
-function env_detect(){
-    if ($.detect_url.length == 0) {
-        $.msg($.name, "", "🚫客官，请前往BoxJs进行配置。")
-        return false;
-    }
-    if ($.detect_url.length != $.target_price.length) {
-        $.msg($.name, "", "🚫客官，商品链接和目标价格是成对填写的。麻烦请前往BoxJs补充完整。")
-        return false;
-    }
-    if($.headers == undefined || $.headers == "" || $.body == undefined || $.body == ""){
-        $.msg($.name, "", "🚫客官，请前往慢慢买app获取cookie。配置过程看js说明！\n注意，不要登录慢慢买账号！")
-        return false;
-    }
-    return true;
-}
-function get_cookie() {
-    headers = $request.headers
-    body = $request.body
-    if (body.indexOf('getHistoryTrend') != -1 && body.indexOf('qs=true') != -1 && body.indexOf('bj=false') != -1) {
-        body = body.replace(/p_url=.*?&/, "p_url=loveyou&")
-        $.setdata(JSON.stringify($request.headers), 'tlb_jd_headers')
-        $.setdata(body, 'tlb_jd_body')
-        $.msg($.name, '', '✅获取会话成功，该重写可以关闭了')
-        if ($.debug) {
-            $.log(`🔅headers如下`)
-            $.log(JSON.stringify($request.headers))
-            $.log(`🔅body如下`)
-            $.log(body)
-        }
-    }
-    $.done($request.body)
-}
-
-function get_setting() {
-    $.detect_url = []
-    $.target_price = []
-    if ($.getdata('tlb_jd_detect_url') != undefined && $.getdata('tlb_jd_detect_url') != "") $.detect_url.push($.getdata('tlb_jd_detect_url'))
-    if ($.getdata('tlb_jd_detect_url2') != undefined && $.getdata('tlb_jd_detect_url2') != "") $.detect_url.push($.getdata('tlb_jd_detect_url2'))
-    if ($.getdata('tlb_jd_detect_url3') != undefined && $.getdata('tlb_jd_detect_url3') != "") $.detect_url.push($.getdata('tlb_jd_detect_url3'))
-    if ($.getdata('tlb_jd_detect_price') != undefined && $.getdata('tlb_jd_detect_price') != "") $.target_price.push($.getdata('tlb_jd_detect_price') * 1)
-    if ($.getdata('tlb_jd_detect_price2') != undefined && $.getdata('tlb_jd_detect_price2') != "") $.target_price.push($.getdata('tlb_jd_detect_price2') * 1)
-    if ($.getdata('tlb_jd_detect_price3') != undefined && $.getdata('tlb_jd_detect_price3') != "") $.target_price.push($.getdata('tlb_jd_detect_price3') * 1)
-
-    $.debug = JSON.parse($.getdata("tlb_jd_debug") || $.debug);
-    $.public = JSON.parse($.getdata("tlb_jd_public") || $.public);
-    // $.detect_days = $.getdata("tlb_jd_detect_days") * 1 || $.detect_days;
-    $.timeout = $.getdata("tlb_jd_timeout") * 1 || $.timeout;
-    if($.public){
-        $.headers = "{\"Cookie\":\"jjkcpnew111=cp50214606_183261029_2020/4/26\",\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Content-Length\":\"516\",\"Accept-Language\":\"zh-cn\"}"
-        $.headers = JSON.parse($.headers)
-        $.body = "methodName=getHistoryTrend&jsoncallback=%3F&p_url=loveyou&qs=true&bj=false&jgzspic=no&callPos=trend_detail&t=1594629654371&username=&u_name=&sign=&c_appver=3.3.71&c_ostype=ios&c_osver=13.5&c_devid=D4AF7FA0-FFE5-45C4-B62E-ECE59DDE3243&c_patch=&c_devmodel=iPhone%20X&c_brand=Apple&c_operator=%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8&c_ctrl=TrendDetailScene&c_win=w_414_h_896&c_dp=1&c_safearea=44_34&c_firstchannel=AppStore&c_firstquerendate=1590462500717&c_channel=AppStore"
-    }
-    else{
-        $.headers = $.getdata('tlb_jd_headers')
-        $.headers = JSON.parse($.headers)
-        $.body = $.getdata('tlb_jd_body')
-    }
-}
-
-function get_price(goods_url, target_price) {
-    return new Promise((resolve) => {
-        try {
-            // console.log(goods_url)
-            url1 = {
-                url: `https://apapia-history.manmanbuy.com/ChromeWidgetServices/WidgetServices.ashx`,
-                headers: $.headers
-            }
-            current_t = new Date().getTime()
-            url1.body = $.body.replace(/t=\d*?&/, `t=${current_t}&`).replace(/p_url=loveyou/, `p_url=${encodeURIComponent(goods_url)}`)
-            if($.debug) console.log(url1)
-            $.post(url1, (error, response, data) => {
-                if (error) {
-                    if ($.debug) $.msg($.name, "", "🚫请求出现错误，具体看日志")
-                    console.log("🚫请求出现错误，具体如下：")
-                    console.log(error)
-                    resolve()
-                }
-                if ($.debug) console.log(response.body)
-                data = JSON.parse(response.body)
-                title = data.single.title
-                youhui = data.single.currentPriceyhStatus
-                price_status_new = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[2])
-                price_status_old = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[1])
-                if(price_status_new < current_t){
-                    price_status = price_status_new;
-                }
-                else{
-                    console.log("🐬 返回的数据存在干扰，已切回到第2新的数据。")
-                    price_status = price_status_old;
-                }
-                result = `✨最新价格：${price_status[1]}元，已低于目标价格：${target_price}元。\n`
-                result += `✨价格状态：${youhui}。\n`
-                if ($.debug) console.log(price_status)
-                if (price_status[2] != "") result += `✨最新优惠：${price_status[2]}\n`
-                if (price_status[1] <= target_price){
-                    console.log(`✨商品：${title}\n${result}`)
-                    $.msg($.name, `商品：${title}`, result)
-                }
-                else {
-                    console.log(`✨商品：${title}\n✨最新价格：${price_status[1]}元，【没有低于目标价格${target_price}元】，不弹通知\n`)
-                }
-                resolve()
-            })
-        } catch (e) {
-            console.log(e)
-            resolve()
-        }
-        setTimeout(() => {
-            if($.debug) console.log("🚨 (防长时间堵塞用)请求已达时间上限，已释放某函数。")
-            resolve()
-        }, $.timeout);
-    })
-}
-// prettier-ignore, @chavyleung
-function Env(s) {
-    this.name = s, this.data = null, this.logs = [], this.isSurge = (() => "undefined" != typeof $httpClient), this.isQuanX = (() => "undefined" != typeof $task), this.isLoon = (() => "undefined" != typeof $loon), this.isNode = (() => "undefined" != typeof module && !!module.exports), this.log = ((...s) => {
-        this.logs = [...this.logs, ...s], s ? console.log(s.join("\n")) : console.log(this.logs.join("\n"))
-    }), this.msg = ((s = this.name, t = "", i = "", opts = "") => {
-        this.isLoon() && $notification.post(s, t, i, opts), this.isSurge() && !this.isLoon() && $notification.post(s, t, i), this.isQuanX() && $notify(s, t, i, {
-            "open-url": opts
-        });
-        const e = ["", "==============\ud83d\udce3\u7cfb\u7edf\u901a\u77e5\ud83d\udce3=============="];
-        s && e.push(s), t && e.push(t), i && e.push(i), console.log(e.join("\n"))
-    }), this.getdata = (s => {
-        if (this.isSurge()) return $persistentStore.read(s);
-        if (this.isQuanX()) return $prefs.valueForKey(s);
-        if (this.isNode()) {
-            const t = "box.dat";
-            return this.fs = this.fs ? this.fs : require("fs"), this.fs.existsSync(t) ? (this.data = JSON.parse(this.fs.readFileSync(t)), this.data[s]) : null
-        }
-    }), this.setdata = ((s, t) => {
-        if (this.isSurge()) return $persistentStore.write(s, t);
-        if (this.isQuanX()) return $prefs.setValueForKey(s, t);
-        if (this.isNode()) {
-            const i = "box.dat";
-            return this.fs = this.fs ? this.fs : require("fs"), !!this.fs.existsSync(i) && (this.data = JSON.parse(this.fs.readFileSync(i)), this.data[t] = s, this.fs.writeFileSync(i, JSON.stringify(this.data)), !0)
-        }
-    }), this.wait = ((s, t = s) => i => setTimeout(() => i(), Math.floor(Math.random() * (t - s + 1) + s))), this.get = ((s, t) => this.send(s, "GET", t)), this.post = ((s, t) => this.send(s, "POST", t)), this.send = ((s, t, i) => {
-        if (this.isSurge()) {
-            const e = "POST" == t ? $httpClient.post : $httpClient.get;
-            e(s, (s, t, e) => {
-                t && (t.body = e, t.statusCode = t.status), i(s, t, e)
-            })
-        }
-        this.isQuanX() && (s.method = t, $task.fetch(s).then(s => {
-            s.status = s.statusCode, i(null, s, s.body)
-        }, s => i(s.error, s, s))), this.isNode() && (this.request = this.request ? this.request : require("request"), s.method = t, s.gzip = !0, this.request(s, (s, t, e) => {
-            t && (t.status = t.statusCode), i(null, t, e)
-        }))
-    }), this.done = ((s = {}) => this.isNode() ? null : $done(s))
-}
+ // $.detect_days = 7
+ $.timeout = 3000 //超时限制，单位ms
+ $.debug = false
+ $.public = false
+ 
+ !(async () => {
+     $.log('', `🔔 ${$.name}, 开始!`, '')
+     if (typeof $request != "undefined") {
+         console.log($request.url)
+         get_cookie()
+         return
+     }
+     get_setting()
+     if(!env_detect()) return
+     for (var i in $.detect_url)
+         await get_price($.detect_url[i], $.target_price[i])
+     $.done()
+ })()
+ .catch((e) => {
+     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+ })
+ .finally(() => {
+     $.log('', `🔔 ${$.name}, 结束!`, '')
+     return
+ })
+ function env_detect(){
+     if ($.detect_url.length == 0) {
+         $.msg($.name, "", "🚫客官，请前往BoxJs进行配置。")
+         return false;
+     }
+     if ($.detect_url.length != $.target_price.length) {
+         $.msg($.name, "", "🚫客官，商品链接和目标价格是成对填写的。麻烦请前往BoxJs补充完整。")
+         return false;
+     }
+     if($.headers == undefined || $.headers == "" || $.body == undefined || $.body == ""){
+         $.msg($.name, "", "🚫客官，请前往慢慢买app获取cookie。配置过程看js说明！\n注意，不要登录慢慢买账号！")
+         return false;
+     }
+     return true;
+ }
+ function get_cookie() {
+     headers = $request.headers
+     body = $request.body
+     if (body.indexOf('getHistoryTrend') != -1 && body.indexOf('qs=true') != -1 && body.indexOf('bj=false') != -1) {
+         body = body.replace(/p_url=.*?&/, "p_url=loveyou&")
+         $.setdata(JSON.stringify($request.headers), 'tlb_jd_headers')
+         $.setdata(body, 'tlb_jd_body')
+         $.msg($.name, '', '✅获取会话成功，该重写可以关闭了')
+         if ($.debug) {
+             $.log(`🔅headers如下`)
+             $.log(JSON.stringify($request.headers))
+             $.log(`🔅body如下`)
+             $.log(body)
+         }
+     }
+     $.done($request.body)
+ }
+ 
+ function get_setting() {
+     $.detect_url = []
+     $.target_price = []
+     if ($.getdata('tlb_jd_detect_url') != undefined && $.getdata('tlb_jd_detect_url') != "") $.detect_url.push($.getdata('tlb_jd_detect_url'))
+     if ($.getdata('tlb_jd_detect_url2') != undefined && $.getdata('tlb_jd_detect_url2') != "") $.detect_url.push($.getdata('tlb_jd_detect_url2'))
+     if ($.getdata('tlb_jd_detect_url3') != undefined && $.getdata('tlb_jd_detect_url3') != "") $.detect_url.push($.getdata('tlb_jd_detect_url3'))
+     if ($.getdata('tlb_jd_detect_price') != undefined && $.getdata('tlb_jd_detect_price') != "") $.target_price.push($.getdata('tlb_jd_detect_price') * 1)
+     if ($.getdata('tlb_jd_detect_price2') != undefined && $.getdata('tlb_jd_detect_price2') != "") $.target_price.push($.getdata('tlb_jd_detect_price2') * 1)
+     if ($.getdata('tlb_jd_detect_price3') != undefined && $.getdata('tlb_jd_detect_price3') != "") $.target_price.push($.getdata('tlb_jd_detect_price3') * 1)
+ 
+     $.debug = JSON.parse($.getdata("tlb_jd_debug") || $.debug);
+     $.public = JSON.parse($.getdata("tlb_jd_public") || $.public);
+     // $.detect_days = $.getdata("tlb_jd_detect_days") * 1 || $.detect_days;
+     $.timeout = $.getdata("tlb_jd_timeout") * 1 || $.timeout;
+     if($.public){
+         $.headers = "{\"Cookie\":\"jjkcpnew111=cp50214606_183261029_2020/4/26\",\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Content-Length\":\"516\",\"Accept-Language\":\"zh-cn\"}"
+         $.headers = JSON.parse($.headers)
+         $.body = "methodName=getHistoryTrend&jsoncallback=%3F&p_url=loveyou&qs=true&bj=false&jgzspic=no&callPos=trend_detail&t=1594629654371&username=&u_name=&sign=&c_appver=3.3.71&c_ostype=ios&c_osver=13.5&c_devid=D4AF7FA0-FFE5-45C4-B62E-ECE59DDE3243&c_patch=&c_devmodel=iPhone%20X&c_brand=Apple&c_operator=%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8&c_ctrl=TrendDetailScene&c_win=w_414_h_896&c_dp=1&c_safearea=44_34&c_firstchannel=AppStore&c_firstquerendate=1590462500717&c_channel=AppStore"
+     }
+     else{
+         $.headers = $.getdata('tlb_jd_headers')
+         $.headers = JSON.parse($.headers)
+         $.body = $.getdata('tlb_jd_body')
+     }
+ }
+ 
+ function get_price(goods_url, target_price) {
+     return new Promise((resolve) => {
+         try {
+             // console.log(goods_url)
+             url1 = {
+                 url: `https://apapia-history.manmanbuy.com/ChromeWidgetServices/WidgetServices.ashx`,
+                 headers: $.headers
+             }
+             current_t = new Date().getTime()
+             url1.body = $.body.replace(/t=\d*?&/, `t=${current_t}&`).replace(/p_url=loveyou/, `p_url=${encodeURIComponent(goods_url)}`)
+             if($.debug) console.log(url1)
+             $.post(url1, (error, response, data) => {
+                 if (error) {
+                     if ($.debug) $.msg($.name, "", "🚫请求出现错误，具体看日志")
+                     console.log("🚫请求出现错误，具体如下：")
+                     console.log(error)
+                     resolve()
+                 }
+                 if ($.debug) console.log(response.body)
+                 data = JSON.parse(response.body)
+                 title = data.single.title
+                 youhui = data.single.currentPriceyhStatus
+                 price_status_new = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[2])
+                 price_status_old = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[1])
+                 if(price_status_new < current_t){
+                     price_status = price_status_new;
+                 }
+                 else{
+                     console.log("🐬 返回的数据存在干扰，已切回到第2新的数据。")
+                     price_status = price_status_old;
+                 }
+                 result = `✨最新：${price_status[1]}元，好价时间：${new Date(price_status[0]).toJSON().replace("T", " ").substr(5, 11)}\n`
+                 result += `✨状态：${price_status[1] <= target_price?"已低于":"没有低于"}目标价格${target_price}元\n`
+                 if ($.debug) console.log(price_status)
+                 if (price_status[2] != "") result += `✨优惠：${price_status[2]}\n`
+                 if (price_status[1] <= target_price){
+                     console.log(`✨商品：${title}\n${result}`)
+                     $.msg($.name, `商品：${title}`, result)
+                 }
+                 else {
+                     console.log(`✨商品：${title}\n${result}该商品不需要弹通知\n`)
+                 }
+                 resolve()
+             })
+         } catch (e) {
+             console.log(e)
+             resolve()
+         }
+         setTimeout(() => {
+             if($.debug) console.log("🚨 (防长时间堵塞用)请求已达时间上限，已释放某函数。")
+             resolve()
+         }, $.timeout);
+     })
+ }
+ // prettier-ignore, @chavyleung
+ function Env(s) {
+     this.name = s, this.data = null, this.logs = [], this.isSurge = (() => "undefined" != typeof $httpClient), this.isQuanX = (() => "undefined" != typeof $task), this.isLoon = (() => "undefined" != typeof $loon), this.isNode = (() => "undefined" != typeof module && !!module.exports), this.log = ((...s) => {
+         this.logs = [...this.logs, ...s], s ? console.log(s.join("\n")) : console.log(this.logs.join("\n"))
+     }), this.msg = ((s = this.name, t = "", i = "", opts = "") => {
+         this.isLoon() && $notification.post(s, t, i, opts), this.isSurge() && !this.isLoon() && $notification.post(s, t, i), this.isQuanX() && $notify(s, t, i, {
+             "open-url": opts
+         });
+         const e = ["", "==============\ud83d\udce3\u7cfb\u7edf\u901a\u77e5\ud83d\udce3=============="];
+         s && e.push(s), t && e.push(t), i && e.push(i), console.log(e.join("\n"))
+     }), this.getdata = (s => {
+         if (this.isSurge()) return $persistentStore.read(s);
+         if (this.isQuanX()) return $prefs.valueForKey(s);
+         if (this.isNode()) {
+             const t = "box.dat";
+             return this.fs = this.fs ? this.fs : require("fs"), this.fs.existsSync(t) ? (this.data = JSON.parse(this.fs.readFileSync(t)), this.data[s]) : null
+         }
+     }), this.setdata = ((s, t) => {
+         if (this.isSurge()) return $persistentStore.write(s, t);
+         if (this.isQuanX()) return $prefs.setValueForKey(s, t);
+         if (this.isNode()) {
+             const i = "box.dat";
+             return this.fs = this.fs ? this.fs : require("fs"), !!this.fs.existsSync(i) && (this.data = JSON.parse(this.fs.readFileSync(i)), this.data[t] = s, this.fs.writeFileSync(i, JSON.stringify(this.data)), !0)
+         }
+     }), this.wait = ((s, t = s) => i => setTimeout(() => i(), Math.floor(Math.random() * (t - s + 1) + s))), this.get = ((s, t) => this.send(s, "GET", t)), this.post = ((s, t) => this.send(s, "POST", t)), this.send = ((s, t, i) => {
+         if (this.isSurge()) {
+             const e = "POST" == t ? $httpClient.post : $httpClient.get;
+             e(s, (s, t, e) => {
+                 t && (t.body = e, t.statusCode = t.status), i(s, t, e)
+             })
+         }
+         this.isQuanX() && (s.method = t, $task.fetch(s).then(s => {
+             s.status = s.statusCode, i(null, s, s.body)
+         }, s => i(s.error, s, s))), this.isNode() && (this.request = this.request ? this.request : require("request"), s.method = t, s.gzip = !0, this.request(s, (s, t, e) => {
+             t && (t.status = t.statusCode), i(null, t, e)
+         }))
+     }), this.done = ((s = {}) => this.isNode() ? null : $done(s))
+ }
