@@ -30,7 +30,6 @@
 
  const $ = new Env('⏰ 京东价格提醒')
 
- // $.detect_days = 7
  $.timeout = 3000 //超时限制，单位ms
  $.debug = false
  $.public = true
@@ -107,7 +106,10 @@
                  }
                  if ($.debug) console.log(response.body)
                  data = JSON.parse(response.body)
-                 title = data.single.title
+                 title = ""
+                 title_list = data.single.title.split(' ')
+                 for (var i = 0; i < title_list.length && i < 3; ++i)
+                    title += `${title_list[i]} `
                  youhui = data.single.currentPriceyhStatus
                  price_status_new = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[2])
                  price_status_old = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[1])
@@ -128,12 +130,33 @@
                  result += `✨状态：${price_status[1] <= target_price?"已低于":"没有低于"}目标价格${target_price}元\n`
                  if ($.debug) console.log(price_status)
                  if (price_status[2] != "") result += `✨优惠：${price_status[2]}\n`
-                 if (price_status[1] <= target_price){
-                     console.log(`✨商品：${title}\n${result}`)
-                     $.msg($.name, `商品：${title}`, result)
+
+                 //2020年07月15日02:09 新增 最近优惠
+                 lastest_info = data.recentlyZK
+                 if($.debug) console.log(lastest_info)
+                 youhui_price = lastest_info.spprice.replace(/<\/?p><\/?p>/g, "，").replace(/<\/?p>/g, "")
+                 current_price = lastest_info.currentprice
+                 goods_time = parseInt(lastest_info.dt.match(/(\d+)\+/)[1])
+                 goods_time += 8 * 3600 * 1000
+                 price_day = new Date(goods_time).toJSON().substr(5, 5).replace('-', '')//获取价格的月日
+                 day_alias = current_day - price_day == 0 ? "今天" : (current_day - price_day == 1 ? "昨天" : price_day = new Date(goods_time).toJSON().substr(5, 5))
+                 result_2 = `✨价格：${current_price}元，检测时间：${day_alias}${new Date(goods_time).toJSON().replace("T", " ").substr(11, 5)}\n`
+                 result_2 += `✨状态：${current_price <= target_price?"已低于":"没有低于"}目标价格${target_price}元\n`
+                 result_2 += `✨其他说明：${youhui_price}\n`
+
+                 if (price_status[0] >= goods_time) {
+                     final_result = result + "\n最近优惠(可能还能上车)\n" + result_2
                  }
                  else {
-                     console.log(`✨商品：${title}\n${result}该商品不需要弹通知\n`)
+                     final_result = result_2 + "\n最近优惠(可能还能上车)\n" + result
+                 }
+
+                 if (price_status[1] <= target_price || current_price <= target_price){
+                     console.log(`✨商品：${title}\n${final_result}`)
+                     $.msg($.name, `商品：${title}`, final_result)
+                 }
+                 else {
+                     console.log(`✨商品：${title}\n${final_result}该商品不需要弹通知\n`)
                  }
                  resolve()
              })
