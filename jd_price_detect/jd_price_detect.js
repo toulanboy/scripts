@@ -95,7 +95,7 @@
                  url: `https://apapia-history.manmanbuy.com/ChromeWidgetServices/WidgetServices.ashx`,
                  headers: $.headers
              }
-             current_t = new Date().getTime()+8*3600*1000
+             current_t = new Date().getTime()
              url1.body = $.body.replace(/t=\d*?&/, `t=${current_t}&`).replace(/p_url=loveyou/, `p_url=${encodeURIComponent(goods_url)}`)
              if($.debug) console.log(url1)
              $.post(url1, (error, response, data) => {
@@ -118,6 +118,8 @@
                      console.log("🐬 返回的数据存在干扰，已切回到第2新的数据。")
                      price_status = price_status_old;
                  }
+                 current_t += 8 * 3600 * 1000
+                 price_status[0] += 8 * 3600 * 1000
                  current_day = new Date(current_t).toJSON().substr(5, 5).replace('-', '')//获取当前的月日
                  price_day = new Date(price_status[0]).toJSON().substr(5, 5).replace('-', '')//获取价格的月日
                  //为了更容易识别，使用 今天、昨天。有个BUG，跨月份的问题，晚点再修。
