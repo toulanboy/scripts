@@ -11,7 +11,8 @@
   2. 打开“慢慢买”app，【不用登陆app】，点击左上角的“查历史价”，然后随便查询一件京东自营的商品。弹出通知后，就拿到cookie了，这时候请回去关闭重写。
   3. 前往boxjs，填写你需要监控的京东链接和目标价格。请注意，链接和价格必须成对填写，缺一不可。
   
-  请注意： 如果检测价格 高于 目标价格，则不会通知！但是日志里面有输出。
+  注1： 如果检测价格 高于 目标价格，则不会通知！但是日志里面有输出。
+  注2： 脚本数据来源于慢慢买app。显示的价格是优惠后的价格，所有数据仅供参考。
 
   *************************
   【Loon 2.1+ 脚本配置】
@@ -48,7 +49,7 @@
 
 const $ = new Env('⏰ 京东价格提醒')
 
-$.detect_days = 7
+// $.detect_days = 7
 $.timeout = 3000 //超时限制，单位ms
 $.debug = false
 $.public = false
@@ -75,7 +76,7 @@ $.public = false
 })
 function env_detect(){
     if ($.detect_url.length == 0) {
-        $.msg($.name, "", "🚫请前往BoxJs进行配置。")
+        $.msg($.name, "", "🚫客官，请前往BoxJs进行配置。")
         return false;
     }
     if ($.detect_url.length != $.target_price.length) {
@@ -83,7 +84,7 @@ function env_detect(){
         return false;
     }
     if($.headers == undefined || $.headers == "" || $.body == undefined || $.body == ""){
-        $.msg($.name, "", "🚫请前往慢慢买app获取cookie。配置过程看js说明！\n注意，不要登录慢慢买账号！")
+        $.msg($.name, "", "🚫客官，请前往慢慢买app获取cookie。配置过程看js说明！\n注意，不要登录慢慢买账号！")
         return false;
     }
     return true;
@@ -118,7 +119,7 @@ function get_setting() {
 
     $.debug = JSON.parse($.getdata("tlb_jd_debug") || $.debug);
     $.public = JSON.parse($.getdata("tlb_jd_public") || $.public);
-    $.detect_days = $.getdata("tlb_jd_detect_days") * 1 || $.detect_days;
+    // $.detect_days = $.getdata("tlb_jd_detect_days") * 1 || $.detect_days;
     $.timeout = $.getdata("tlb_jd_timeout") * 1 || $.timeout;
     if($.public){
         $.headers = "{\"Cookie\":\"jjkcpnew111=cp50214606_183261029_2020/4/26\",\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Content-Length\":\"516\",\"Accept-Language\":\"zh-cn\"}"
@@ -160,17 +161,19 @@ function get_price(goods_url, target_price) {
                     price_status = price_status_new;
                 }
                 else{
-                    console.log("🤣返回的数据存在干扰，已切回到第2新的数据")
+                    console.log("🐬 返回的数据存在干扰，已切回到第2新的数据。")
                     price_status = price_status_old;
                 }
                 result = `✨最新价格：${price_status[1]}元，已低于目标价格：${target_price}元。\n`
                 result += `✨价格状态：${youhui}。\n`
                 if ($.debug) console.log(price_status)
                 if (price_status[2] != "") result += `✨最新优惠：${price_status[2]}\n`
-                if (price_status[1] <= target_price)
+                if (price_status[1] <= target_price){
+                    console.log(`✨商品：${title}\n${result}`)
                     $.msg($.name, `商品：${title}`, result)
+                }
                 else {
-                    console.log(`✨商品：${title} 【没有低于目标价格${target_price}元】，不弹通知`)
+                    console.log(`✨商品：${title}\n✨最新价格：${price_status[1]}元，【没有低于目标价格${target_price}元】，不弹通知\n`)
                 }
                 resolve()
             })
