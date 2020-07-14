@@ -3,6 +3,8 @@
   
   📕地址：https://github.com/toulanboy/scripts
   📌不定期更新各种签到、有趣的脚本，欢迎star🌟
+  
+  📕更多有趣脚本：https://t.me/cool_scripts
 
   *************************
   【配置步骤，请认真阅读】
@@ -13,31 +15,16 @@
   注1： 如果检测价格 高于 目标价格，则不会通知！但是日志里面有输出。
   注2： 脚本数据来源于慢慢买app。显示的价格是优惠后的价格，所有数据仅供参考。
 
-  *************************
   【Loon 2.1+ 脚本配置】
-  *************************
   [script]
   cron "5 0 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
 
-  [MITM]
-  hostname = apapia-history.manmanbuy.com
-
-  *************************
   【 QX 1.0.10+ 脚本配置 】 
-  *************************
   [task]
   5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
 
-  [MITM]
-  hostname = apapia-history.manmanbuy.com
-
-  *************************
   【Surge 4.2+ 脚本配置】
-  *************************
   京东价格提醒 = type=cron,cronexp="5 0 * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,wake-system=true,timeout=600
-
-  [MITM]
-  hostname = apapia-history.manmanbuy.com
 
   *********/
 
@@ -50,11 +37,6 @@
  
  !(async () => {
      $.log('', `🔔 ${$.name}, 开始!`, '')
-    //  if (typeof $request != "undefined") {
-    //      console.log($request.url)
-    //      get_cookie()
-    //      return
-    //  }
      get_setting()
      if(!env_detect()) return
      for (var i in $.detect_url)
@@ -77,43 +59,21 @@
          $.msg($.name, "", "🚫客官，商品链接和目标价格是成对填写的。麻烦请前往BoxJs补充完整。")
          return false;
      }
-    //  if($.headers == undefined || $.headers == "" || $.body == undefined || $.body == ""){
-    //      $.msg($.name, "", "🚫客官，请前往慢慢买app获取cookie。配置过程看js说明！\n注意，不要登录慢慢买账号！")
-    //      return false;
-    //  }
      return true;
  }
- function get_cookie() {
-     headers = $request.headers
-     body = $request.body
-     if (body.indexOf('getHistoryTrend') != -1 && body.indexOf('qs=true') != -1 && body.indexOf('bj=false') != -1) {
-         body = body.replace(/p_url=.*?&/, "p_url=loveyou&")
-         $.setdata(JSON.stringify($request.headers), 'tlb_jd_headers')
-         $.setdata(body, 'tlb_jd_body')
-         $.msg($.name, '', '✅获取会话成功，该重写可以关闭了')
-         if ($.debug) {
-             $.log(`🔅headers如下`)
-             $.log(JSON.stringify($request.headers))
-             $.log(`🔅body如下`)
-             $.log(body)
-         }
-     }
-     $.done($request.body)
- }
- 
+
  function get_setting() {
      $.detect_url = []
      $.target_price = []
-     if ($.getdata('tlb_jd_detect_url') != undefined && $.getdata('tlb_jd_detect_url') != "") $.detect_url.push($.getdata('tlb_jd_detect_url'))
-     if ($.getdata('tlb_jd_detect_url2') != undefined && $.getdata('tlb_jd_detect_url2') != "") $.detect_url.push($.getdata('tlb_jd_detect_url2'))
-     if ($.getdata('tlb_jd_detect_url3') != undefined && $.getdata('tlb_jd_detect_url3') != "") $.detect_url.push($.getdata('tlb_jd_detect_url3'))
-     if ($.getdata('tlb_jd_detect_price') != undefined && $.getdata('tlb_jd_detect_price') != "") $.target_price.push($.getdata('tlb_jd_detect_price') * 1)
-     if ($.getdata('tlb_jd_detect_price2') != undefined && $.getdata('tlb_jd_detect_price2') != "") $.target_price.push($.getdata('tlb_jd_detect_price2') * 1)
-     if ($.getdata('tlb_jd_detect_price3') != undefined && $.getdata('tlb_jd_detect_price3') != "") $.target_price.push($.getdata('tlb_jd_detect_price3') * 1)
- 
+     for(var i=1; i<=3; ++i){
+         url_name = "tlb_jd_detect_url" + (i==1?"":i)
+         price_name = "tlb_jd_detect_price" + (i==1?"":i)
+         if ($.getdata(url_name) != undefined && $.getdata(url_name) != "") 
+            $.detect_url.push($.getdata(url_name))
+         if ($.getdata(price_name) != undefined && $.getdata(price_name) != "") 
+            $.target_price.push($.getdata(price_name))
+     }
      $.debug = JSON.parse($.getdata("tlb_jd_debug") || $.debug);
-    //  $.public = JSON.parse($.getdata("tlb_jd_public") || $.public);
-     // $.detect_days = $.getdata("tlb_jd_detect_days") * 1 || $.detect_days;
      $.timeout = $.getdata("tlb_jd_timeout") * 1 || $.timeout;
      if($.public){
          $.headers = "{\"Cookie\":\"jjkcpnew111=cp50107386_164461029_2020/4/26\",\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Content-Length\":\"516\",\"Accept-Language\":\"zh-cn\"}"
