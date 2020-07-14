@@ -8,8 +8,7 @@
   【配置步骤，请认真阅读】
   *************************
   1. 根据你当前的软件，配置好srcipt。 Tips:由于是远程文件，记得顺便更新文件。
-  2. 打开“慢慢买”app，【不用登陆app】，点击左上角的“查历史价”，然后随便查询一件京东自营的商品。弹出通知后，就拿到cookie了，这时候请回去关闭重写。
-  3. 前往boxjs，填写你需要监控的京东链接和目标价格。请注意，链接和价格必须成对填写，缺一不可。
+  2. 前往boxjs，填写你需要监控的京东链接和目标价格。请注意，链接和价格必须成对填写，缺一不可。
   
   注1： 如果检测价格 高于 目标价格，则不会通知！但是日志里面有输出。
   注2： 脚本数据来源于慢慢买app。显示的价格是优惠后的价格，所有数据仅供参考。
@@ -19,17 +18,13 @@
   *************************
   [script]
   cron "5 0 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
-  ^http-request https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,requires-body=true, tag=京东价格提醒cookie获取
-  
+
   [MITM]
   hostname = apapia-history.manmanbuy.com
 
   *************************
   【 QX 1.0.10+ 脚本配置 】 
   *************************
-  [rewrite_local]
-  ^https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx url script-request-body https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js
-
   [task]
   5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
 
@@ -39,7 +34,6 @@
   *************************
   【Surge 4.2+ 脚本配置】
   *************************
-  京东价格提醒cookie获取 = type=http-request,pattern=^https:\/\/apapia-history\.manmanbuy\.com\/ChromeWidgetServices\/WidgetServices\.ashx,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,requires-body=true
   京东价格提醒 = type=cron,cronexp="5 0 * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,wake-system=true,timeout=600
 
   [MITM]
@@ -51,16 +45,16 @@
 
  // $.detect_days = 7
  $.timeout = 3000 //超时限制，单位ms
- $.debug = false
- $.public = false
+ $.debug = true
+ $.public = true
  
  !(async () => {
      $.log('', `🔔 ${$.name}, 开始!`, '')
-     if (typeof $request != "undefined") {
-         console.log($request.url)
-         get_cookie()
-         return
-     }
+    //  if (typeof $request != "undefined") {
+    //      console.log($request.url)
+    //      get_cookie()
+    //      return
+    //  }
      get_setting()
      if(!env_detect()) return
      for (var i in $.detect_url)
@@ -83,10 +77,10 @@
          $.msg($.name, "", "🚫客官，商品链接和目标价格是成对填写的。麻烦请前往BoxJs补充完整。")
          return false;
      }
-     if($.headers == undefined || $.headers == "" || $.body == undefined || $.body == ""){
-         $.msg($.name, "", "🚫客官，请前往慢慢买app获取cookie。配置过程看js说明！\n注意，不要登录慢慢买账号！")
-         return false;
-     }
+    //  if($.headers == undefined || $.headers == "" || $.body == undefined || $.body == ""){
+    //      $.msg($.name, "", "🚫客官，请前往慢慢买app获取cookie。配置过程看js说明！\n注意，不要登录慢慢买账号！")
+    //      return false;
+    //  }
      return true;
  }
  function get_cookie() {
@@ -118,13 +112,13 @@
      if ($.getdata('tlb_jd_detect_price3') != undefined && $.getdata('tlb_jd_detect_price3') != "") $.target_price.push($.getdata('tlb_jd_detect_price3') * 1)
  
      $.debug = JSON.parse($.getdata("tlb_jd_debug") || $.debug);
-     $.public = JSON.parse($.getdata("tlb_jd_public") || $.public);
+    //  $.public = JSON.parse($.getdata("tlb_jd_public") || $.public);
      // $.detect_days = $.getdata("tlb_jd_detect_days") * 1 || $.detect_days;
      $.timeout = $.getdata("tlb_jd_timeout") * 1 || $.timeout;
      if($.public){
-         $.headers = "{\"Cookie\":\"jjkcpnew111=cp50214606_183261029_2020/4/26\",\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Content-Length\":\"516\",\"Accept-Language\":\"zh-cn\"}"
+         $.headers = "{\"Cookie\":\"jjkcpnew111=cp50107386_164461029_2020/4/26\",\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Content-Length\":\"516\",\"Accept-Language\":\"zh-cn\"}"
          $.headers = JSON.parse($.headers)
-         $.body = "methodName=getHistoryTrend&jsoncallback=%3F&p_url=loveyou&qs=true&bj=false&jgzspic=no&callPos=trend_detail&t=1594629654371&username=&u_name=&sign=&c_appver=3.3.71&c_ostype=ios&c_osver=13.5&c_devid=D4AF7FA0-FFE5-45C4-B62E-ECE59DDE3243&c_patch=&c_devmodel=iPhone%20X&c_brand=Apple&c_operator=%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8&c_ctrl=TrendDetailScene&c_win=w_414_h_896&c_dp=1&c_safearea=44_34&c_firstchannel=AppStore&c_firstquerendate=1590462500717&c_channel=AppStore"
+         $.body = "methodName=getHistoryTrend&jsoncallback=%3F&p_url=loveyou&qs=true&bj=false&jgzspic=no&callPos=trend_detail&t=1594629654371&username=&u_name=&sign=&c_appver=3.3.71&c_ostype=ios&c_osver=13.5&c_devid=D4AF7FA0-F7E5-65E4-B63E-ECE58DDE3243&c_patch=&c_devmodel=iPhone%20X&c_brand=Apple&c_operator=%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8&c_ctrl=TrendDetailScene&c_win=w_414_h_896&c_dp=1&c_safearea=44_34&c_firstchannel=AppStore&c_firstquerendate=1590431720717&c_channel=AppStore"
      }
      else{
          $.headers = $.getdata('tlb_jd_headers')
