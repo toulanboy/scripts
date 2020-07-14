@@ -21,7 +21,7 @@
       {
         "id": "jd_price_detect",
         "name": "京东价格提醒",
-        "keys": ["tlb_jd_headers", "tlb_jd_body", "tlb_jd_timeout", "tlb_jd_debug", "tlb_jd_public", "tlb_jd_detect_days"],
+        "keys": ["tlb_jd_timeout", "tlb_jd_debug"],
         "settings": [
             { "id": "tlb_jd_detect_url", "name": "商品链接A", "val": "", "type": "text", "placeholder":"请在商品页获取分享链接", "desc": "请在商品页获取分享链接" },
             { "id": "tlb_jd_detect_price", "name": "商品链接A 目标价格", "val": "", "type": "text", "placeholder":"若商品A低于该价格，则会提醒。", "desc": "若商品A低于该价格，则会提醒。【只填数字】" },
