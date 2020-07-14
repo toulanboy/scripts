@@ -32,7 +32,7 @@
 
  // $.detect_days = 7
  $.timeout = 3000 //超时限制，单位ms
- $.debug = true
+ $.debug = false
  $.public = true
  
  !(async () => {
@@ -95,7 +95,7 @@
                  url: `https://apapia-history.manmanbuy.com/ChromeWidgetServices/WidgetServices.ashx`,
                  headers: $.headers
              }
-             current_t = new Date().getTime()
+             current_t = new Date().getTime()+8*3600*1000
              url1.body = $.body.replace(/t=\d*?&/, `t=${current_t}&`).replace(/p_url=loveyou/, `p_url=${encodeURIComponent(goods_url)}`)
              if($.debug) console.log(url1)
              $.post(url1, (error, response, data) => {
@@ -111,14 +111,18 @@
                  youhui = data.single.currentPriceyhStatus
                  price_status_new = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[2])
                  price_status_old = eval(data.single.jiagequshiyh.match(/.*(\[.*?\]).*?(\[.*?\])$/)[1])
-                 if(price_status_new < current_t){
+                 if(price_status_new[0] < current_t){
                      price_status = price_status_new;
                  }
                  else{
                      console.log("🐬 返回的数据存在干扰，已切回到第2新的数据。")
                      price_status = price_status_old;
                  }
-                 result = `✨最新：${price_status[1]}元，好价时间：${new Date(price_status[0]).toJSON().replace("T", " ").substr(5, 11)}\n`
+                 current_day = new Date(current_t).toJSON().substr(5, 5).replace('-', '')//获取当前的月日
+                 price_day = new Date(price_status[0]).toJSON().substr(5, 5).replace('-', '')//获取价格的月日
+                 //为了更容易识别，使用 今天、昨天。有个BUG，跨月份的问题，晚点再修。
+                 day_alias = current_day-price_day==0?"今天":(current_day-price_day==1?"昨天":price_day = new Date(price_status[0]).toJSON().substr(5, 5))
+                 result = `✨价格：${price_status[1]}元，检测时间：${day_alias}${new Date(price_status[0]).toJSON().replace("T", " ").substr(11, 5)}\n`
                  result += `✨状态：${price_status[1] <= target_price?"已低于":"没有低于"}目标价格${target_price}元\n`
                  if ($.debug) console.log(price_status)
                  if (price_status[2] != "") result += `✨优惠：${price_status[2]}\n`
