@@ -24,13 +24,13 @@
         "keys": ["tlb_jd_timeout", "tlb_jd_debug"],
         "settings": [
             { "id": "tlb_jd_detect_url", "name": "商品链接A", "val": "", "type": "text", "placeholder":"请在商品页获取分享链接", "desc": "请在商品页获取分享链接" },
-            { "id": "tlb_jd_detect_price", "name": "商品链接A 目标价格", "val": "", "type": "text", "placeholder":"若商品A低于该价格，则会提醒。", "desc": "若商品A低于该价格，则会提醒。【只填数字】" },
+            { "id": "tlb_jd_detect_price", "name": "商品链接A 目标价格", "val": "", "type": "text", "placeholder":"若商品A低于该价格，则会提醒。", "desc": "注：只填数字" },
             
             { "id": "tlb_jd_detect_url2", "name": "商品链接B", "val": "", "type": "text", "placeholder":"请在商品页获取分享链接", "desc": "请在商品页获取分享链接" },
-            { "id": "tlb_jd_detect_price2", "name": "商品链接B 目标价格", "val": "", "type": "text", "placeholder":"若商品B低于该价格，则会提醒。", "desc": "若商品B低于该价格，则会提醒。【只填数字】" },
+            { "id": "tlb_jd_detect_price2", "name": "商品链接B 目标价格", "val": "", "type": "text", "placeholder":"若商品B低于该价格，则会提醒。", "desc": "注：只填数字" },
             
             { "id": "tlb_jd_detect_url3", "name": "商品链接C", "val": "", "type": "text", "placeholder":"请在商品页获取分享链接", "desc": "请在商品页获取分享链接" },
-            { "id": "tlb_jd_detect_price3", "name": "商品链接C 目标价格", "val": "", "type": "text", "placeholder":"若商品C低于该价格，则会提醒。", "desc": "若商品C低于该价格，则会提醒。【只填数字】" },
+            { "id": "tlb_jd_detect_price3", "name": "商品链接C 目标价格", "val": "", "type": "text", "placeholder":"若商品C低于该价格，则会提醒。", "desc": "注：只填数字" },
             
             { "id": "tlb_jd_timeout", "name": "[debug]请求超时限制 (毫秒)", "val": 3000, "type": "text", "desc": "" },
             { "id": "tlb_jd_debug", "name": "[debug]打开debug", "val": false, "type": "boolean", "desc": "debug功能开关"}    
