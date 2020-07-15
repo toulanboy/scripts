@@ -6,9 +6,7 @@
   
   📕更多有趣脚本：https://t.me/cool_scripts
 
-  *************************
   【配置步骤，请认真阅读】
-  *************************
   1. 根据你当前的软件，配置好srcipt。 Tips:由于是远程文件，记得顺便更新文件。
   2. 前往boxjs，填写你需要监控的京东链接和目标价格。请注意，链接和价格必须成对填写，缺一不可。
   
@@ -16,11 +14,9 @@
   注2： 脚本数据来源于慢慢买app。显示的价格是优惠后的价格，所有数据仅供参考。
 
   【Loon 2.1+ 脚本配置】
-  [script]
   cron "5 0 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
 
   【 QX 1.0.10+ 脚本配置 】 
-  [task]
   5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
 
   【Surge 4.2+ 脚本配置】
@@ -75,9 +71,9 @@
      $.debug = JSON.parse($.getdata("tlb_jd_debug") || $.debug);
      $.timeout = $.getdata("tlb_jd_timeout") * 1 || $.timeout;
      if($.public){
-         $.headers = "{\"Cookie\":\"jjkcpnew111=cp50107386_164461029_2020/4/26\",\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Content-Length\":\"516\",\"Accept-Language\":\"zh-cn\"}"
+         $.headers = "{\"Accept\":\"*/*\",\"Connection\":\"keep-alive\",\"Content-Type\":\"application/x-www-form-urlencoded; charset=utf-8\",\"Accept-Encoding\":\"gzip, deflate, br\",\"Host\":\"apapia-history.manmanbuy.com\",\"User-Agent\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 - mmbWebBrowse - ios \",\"Accept-Language\":\"zh-cn\"}"
          $.headers = JSON.parse($.headers)
-         $.body = "methodName=getHistoryTrend&jsoncallback=%3F&p_url=loveyou&qs=true&bj=false&jgzspic=no&callPos=trend_detail&t=1594629654371&username=&u_name=&sign=&c_appver=3.3.71&c_ostype=ios&c_osver=13.5&c_devid=D4AF7FA0-F7E5-65E4-B63E-ECE58DDE3243&c_patch=&c_devmodel=iPhone%20X&c_brand=Apple&c_operator=%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8&c_ctrl=TrendDetailScene&c_win=w_414_h_896&c_dp=1&c_safearea=44_34&c_firstchannel=AppStore&c_firstquerendate=1590431720717&c_channel=AppStore"
+         $.body = "methodName=getHistoryTrend&p_url=loveyou&t=1594629654371"
      }
      else{
          $.headers = $.getdata('tlb_jd_headers')
@@ -95,7 +91,7 @@
                  headers: $.headers
              }
              current_t = new Date().getTime()
-             url1.body = $.body.replace(/t=\d*?&/, `t=${current_t}&`).replace(/p_url=loveyou/, `p_url=${encodeURIComponent(goods_url)}`)
+             url1.body = $.body.replace(/p_url=loveyou/, `p_url=${encodeURIComponent(goods_url)}`)
              if($.debug) console.log(url1)
              $.post(url1, (error, response, data) => {
                  if (error) {
