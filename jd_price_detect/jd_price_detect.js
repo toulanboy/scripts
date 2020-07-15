@@ -8,18 +8,21 @@
 
   【配置步骤，请认真阅读】
   1. 根据你当前的软件，配置好srcipt。 Tips:由于是远程文件，记得顺便更新文件。
-  2. 前往boxjs，填写你需要监控的京东链接和目标价格。请注意，链接和价格必须成对填写，缺一不可。
+  2. 前往boxjs，订阅应用（地址见下方），填写你需要监控的京东链接和目标价格。
   
-  注1： 如果检测价格 高于 目标价格，则不会通知！但是日志里面有输出。
-  注2： 脚本数据来源于慢慢买app。显示的价格是优惠后的价格，所有数据仅供参考。
+  🔅BoxJs订阅地址：https://raw.githubusercontent.com/toulanboy/scripts/master/toulanboy.boxjs.json
+  🔅BoxJs使用教程：https://t.me/chavyscripts/91
 
-  【Loon 2.1+ 脚本配置】
+  💢注1： 如果检测价格 高于 目标价格，则不会通知！但是日志里面有输出。
+  💢注2： 脚本数据来源于慢慢买app。显示的价格是优惠后的价格，所有数据仅供参考。
+
+  [Loon]
   cron "5 0 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
 
-  【 QX 1.0.10+ 脚本配置 】 
+  [Quanx]
   5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js, tag=京东价格提醒
 
-  【Surge 4.2+ 脚本配置】
+  [Surge]
   京东价格提醒 = type=cron,cronexp="5 0 * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js,wake-system=true,timeout=600
 
   *********/
@@ -85,7 +88,7 @@
  function get_price(goods_url, target_price) {
      return new Promise((resolve) => {
          try {
-             console.log(`\n🛒开始检测商品：${goods_url}\n`)
+             if($.debug) console.log(`\n🛒开始检测商品：${goods_url}\n`)
              url1 = {
                  url: `https://apapia-history.manmanbuy.com/ChromeWidgetServices/WidgetServices.ashx`,
                  headers: $.headers
