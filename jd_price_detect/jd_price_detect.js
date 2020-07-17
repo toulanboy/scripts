@@ -176,20 +176,28 @@
                  }
                  is_notify = false;
                  //2. 开始通知。 只提醒 未展示过的低价
-                 if (price_status[1] <= target_price || current_price <= target_price) {
+                 if (price_status[1] <= target_price) {
                      final_result = ""
                      if (is_price_show == false && is_youhui_showed == false) {
                          final_result = result + "\n最近优惠:\n" + result_2
                      } else if (is_price_show == false && is_youhui_showed == true) {
                          final_result = result
-                     } else if (is_price_show == true && is_youhui_showed == false) {
-                         final_result = result_2
                      }
                      if (final_result != "") {
                          is_notify = true
                          $.msg($.name, `${title}`, final_result, goods_url)
                      }
                  }
+                 else if (current_price <= target_price) {
+                    final_result = ""
+                    if (is_youhui_showed == false) {
+                        final_result = result_2
+                    }
+                    if (final_result != "") {
+                        is_notify = true
+                        $.msg($.name, `${title}`, final_result, goods_url)
+                    }
+                }
                  if (!is_notify) {
                      console.log(`\n--------start--------\n💢此次检测的情况，不存在最新的低价，【不弹】通知。\n--------end--------\n`)
                  }
