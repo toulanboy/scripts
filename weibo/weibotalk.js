@@ -283,8 +283,8 @@ function checkin(id, name) {
                 if (debug) console.log(response)
             } else if (response.statusCode == 511) {
                 $.failNum += 1;
-                $.message.push(`【${idname}】："需要身份验证，请稍后再试"`);
-                console.log(`【${idname}】："需要身份验证，请稍后再试"`);
+                $.message.push(`【${name}】："需要身份验证，请稍后再试"`);
+                console.log(`【${name}】："需要身份验证，请稍后再试"`);
             } else {
                 var body = response.body;
                 var obj = JSON.parse(body);
@@ -312,9 +312,9 @@ function checkin(id, name) {
                     if (debug) console.log(response)
                 } else if (obj["errno"] == -100) {
                     $.stopNum += 1;
-                    $.message.push(`【${idname}】：签到失败，请重新签到获取Cookie⚠️`);
+                    $.message.push(`【${name}】：签到失败，请重新签到获取Cookie⚠️`);
                     console.log(
-                        `【${idname}】执行签到：签到失败，请重新签到获取Cookie⚠️`
+                        `【${name}】执行签到：签到失败，请重新签到获取Cookie⚠️`
                     );
                 } else {
                     $.message.push(`【${name}】："未知错误⚠️"`);
