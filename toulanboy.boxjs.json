@@ -10,14 +10,15 @@
         "name": "微博超话",
         "keys": ["evil_tokenurl", "evil_tokencheckinurl", "evil_tokenheaders", "evil_tokencheckinheaders","evil_tokenurl2", "evil_tokencheckinurl2", "evil_tokenheaders2", "evil_tokencheckinheaders2"],
         "settings": [
-            { "id": "wb_delete_cookie", "name": "打开清空cookie功能", "val": false, "type": "boolean", "desc": "清空cookie功能开关" },
+            { "id": "wb_delete_cookie", "name": "打开清空cookie功能", "val": false, "type": "boolean", "desc": "" },
             { "id": "wb_msg_max_num", "name": "每个通知显示超话数", "val": 30, "type": "number", "desc": "每页最显示多少个超话" },
             { "id": "wb_request_time", "name": "签到间隔 (毫秒)", "val": 700, "type": "number", "desc": "每个超话签到的间隔（超话大于50个的，建议填1000以上）" }
         ],
         "author": "@toulanboy, @evilbutcher",
         "repo": "https://github.com/toulanboy/scripts/blob/master/weibo",
-        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png", "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"]
-      },
+        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png", "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"],
+        "script": "https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.js"
+    },
       {
         "id": "jd_price_detect",
         "name": "京东价格提醒",
@@ -33,19 +34,21 @@
             { "id": "tlb_jd_detect_price3", "name": "商品链接C 目标价格", "val": "", "type": "number", "placeholder":"若商品C低于该价格，则会提醒。", "desc": "" },
             
             { "id": "tlb_jd_timeout", "name": "[debug]请求超时限制 (毫秒)", "val": 3000, "type": "number", "desc": "" },
-            { "id": "tlb_jd_debug", "name": "[debug]打开debug", "val": false, "type": "boolean", "desc": "debug功能开关"}    
+            { "id": "tlb_jd_debug", "name": "[debug]打开debug", "val": false, "type": "boolean", "desc": ""}    
         ],
         "author": "@toulanboy",
         "repo": "https://github.com/toulanboy/scripts/blob/master/jd_price_detect",
-        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/jd.png", "https://raw.githubusercontent.com/Orz-3/task/master/jd.png"]
-      },
+        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/jd.png", "https://raw.githubusercontent.com/Orz-3/task/master/jd.png"],
+        "script": "https://raw.githubusercontent.com/toulanboy/scripts/master/jd_price_detect/jd_price_detect.js"
+    },
       {
         "id": "muchong",
         "name": "小木虫论坛",
         "keys": ["muchong_headers"],
         "author": "@toulanboy",
         "repo": "https://github.com/toulanboy/scripts/blob/master/muchong",
-        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/muchong.png", "https://raw.githubusercontent.com/Orz-3/task/master/muchong.png"]
+        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/muchong.png", "https://raw.githubusercontent.com/Orz-3/task/master/muchong.png"],
+        "script": "https://raw.githubusercontent.com/toulanboy/scripts/master/muchong/muchong.js"
       },
       {
         "id": "weather-simple",
@@ -60,7 +63,8 @@
         ],
         "author": "@toulanboy",
         "repo": "https://github.com/toulanboy/scripts/blob/master/weather",
-        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weather.png", "https://raw.githubusercontent.com/Orz-3/task/master/weather.png"]
-      }
+        "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/weather.png", "https://raw.githubusercontent.com/Orz-3/task/master/weather.png"],
+        "script": "https://raw.githubusercontent.com/toulanboy/scripts/master/weather/weather.js"  
+    }
     ]
   }
