@@ -156,7 +156,7 @@
                     has_recentZK = true
                     youhui_price = lastest_info.spprice.replace(/<\/?p><\/?p>/g, "，").replace(/<\/?p>/g, "")
                     current_price = lastest_info.currentprice
-                    goods_time = parseInt(lastest_info.dt.match(/(\d+)\+/)[1])
+                    goods_time = parseInt(lastest_info.dt.match(/(\d+)/)[1])
                     goods_time += 8 * 3600 * 1000
                     price_day = new Date(goods_time).toJSON().substr(5, 5).replace('-', '') //获取价格的月日
                     day_alias = current_day - price_day == 0 ? "今天" : (current_day - price_day == 1 ? "昨天" : new Date(goods_time).toJSON().substr(5, 5)+" ")
