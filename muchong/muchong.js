@@ -30,98 +30,132 @@ hostname = *.xmcimg.com
 */
 const $ = new Env('🦜小木虫论坛')
 
-$.muchong_headers = $.getdata("muchong_headers")
-
-const debug = false
+$.debug = false
 
 !(async () => {
-  if (typeof $request != "undefined") {
-    await getCookie()
-  }
-  else {
-    await getCode()
-    if ($.isSign == false) {
-      await checkin()
+    if (typeof $request != "undefined") {
+        set_cookie()
+    } else {
+        get_env()
+        await get_hashcode()
+        if ($.need_sign) await checkin()
     }
-  }
 })()
-  .catch((e) => {
+.catch((e) => {
     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
+})
+.finally(() => {
     $.done()
-  })
-function getCookie() {
-  const VAL_headers = JSON.stringify($request.headers)
-  if (VAL_headers) {
+})
+
+function get_env() {
+    $.debug = JSON.parse($.getdata('muchong_debug') || $.debug)
+    $.muchong_headers = $.getdata("muchong_headers")
+}
+
+function set_cookie() {
     $.setdata(JSON.stringify($request.headers), 'muchong_headers')
+    if ($.debug) console.log($.getdata("muchong_headers"))
     $.msg($.name, `📌获取会话成功`)
-    if (debug) {
-      console.log($.getdata("muchong_headers"))
-    }
-  }
 }
-function getCode() {
-  const url = {
-    url: `https://mapi.xmcimg.com/bbs/memcp.php`,
-    body: `action=getcredit&_tpl=app&target=1`
-  };
-  url.headers = JSON.parse($.muchong_headers)
-  if (debug) console.log(url)
-  return new Promise((resove) => {
-    $.post(url, (error, response, data) => {
-      if (error) throw new Error(error)
-      if (debug) console.log(response)
 
-      if (data.match(/点击拆红包/)) {
-        var result = data.match(/id=\"formhash\" value=\"(.*?)\"/)
-        if (result != null) {
-          $.formhash = result[1]
-          $.isSign = false
-          console.log(`${$.name} ✅已找到code: ${$.formhash}`)  
-          resove()
-        }
-        else {
-          console.log(`${$.name} 🚫找不到formhash, cookie可能失效了`)
-          $.msg($.name, "",`🚫找不到formhash, cookie可能失效了`)
-          $.isSign = true;
-          resove()
-        }
-      }
-      else if (data.match(/已连续/)) {
-        $.isSign = true;
-        $.coin = data.match(/<em>(\d+?)<\/em>/)
-        $.other_message = data.match(/已连续.*?(\d+).*?天领取，连续.*?(\d+).*?天得大礼包/)
-        $.msg(`${$.name}`, "", `🚫重复签到，签到情况如下：\n1️⃣获得金币${$.coin[1]}\n2️⃣${$.other_message[0]}`)
-        resove()
-      }
-      else {
-        $.isSign = false
-        console.log(`${$.name} 🚫找不到连续连续签到信息`)
-        resove()
-      }
+function get_hashcode() {
+    const url = {
+        url: `https://mapi.xmcimg.com/bbs/memcp.php`,
+        body: `action=getcredit&_tpl=app&target=1`
+    };
+    url.headers = JSON.parse($.muchong_headers)
+    if ($.debug) console.log(url)
+    return new Promise((resolve) => {
+        $.post(url, (error, response, data) => {
+            if (error) throw new Error(error)
+            if ($.debug) console.log(response)
+            if (response.status == 404) {
+                console.log(`${$.name} 签到网址404，找不到相关信息`)
+                $.msg(`${$.name}`, `签到网址404`,`可能是服务器临时维护，若持续多天无法签到，请联系Github@toulanboy`)
+                $.need_sign = false
+                // return
+                resolve()
+                return
+            }
+            $.need_sign = false
+            if (data.match(/点击拆红包/)) {
+                var result = data.match(/id=\"formhash\" value=\"(.*?)\"/)
+                if (result != null) {
+                    $.formhash = result[1]
+                    $.need_sign = true
+                    console.log(`${$.name} ✅已找到code: ${$.formhash}`)
+                } else {
+                    console.log(`${$.name} 找不到formhash，cookie可能已失效，请重新获取。`)
+                    $.msg($.name, `找不到formhash`,`cookie可能已失效，请重新获取。`)
+                }
+            } else if (data.match(/已连续/)) {
+                $.coin = data.match(/<em>(\d+?)<\/em>/)
+                $.other_message = data.match(/已连续.*?(\d+).*?天领取，连续.*?(\d+).*?天得大礼包/)
+                $.msg(`${$.name}`, "", `重复签到，签到情况如下：\n1️⃣获得金币${$.coin[1]}\n2️⃣${$.other_message[0]}`)
+            } else {
+                console.log(`${$.name}`,`找不到相关信息`,`cookie可能已失效，请重新获取。`)
+            }
+            resolve()
+        })
     })
-  })
 }
+
 function checkin() {
-  const url = {
-    url: 'https://mapi.xmcimg.com/bbs/memcp.php?action=getcredit',
-    body: `getmode=1&creditsubmit=1&formhash=${$.formhash}`
-  };
-  url.headers = JSON.parse($.muchong_headers)
-  if (debug) console.log(url)
-  return new Promise((resove) => {
-    $.post(url, (error, response, data) => {
-      if (error) throw new Error(error)
-      if (debug) console.log(response)
-      $.coin = data.match(/<em>(\d+?)<\/em>/)
-      $.other_message = data.match(/已连续.*?(\d+).*?天领取，连续.*?(\d+).*?天得大礼包/)
-      $.msg(`${$.name}`, "", `✅签到成功，签到情况如下：\n1️⃣获得金币${$.coin[1]}\n2️⃣${$.other_message[0]}`)
-      //今天的红包，您已经领取了，一天就一次机会
+    const url = {
+        url: 'https://mapi.xmcimg.com/bbs/memcp.php?action=getcredit',
+        body: `getmode=1&creditsubmit=1&formhash=${$.formhash}`
+    };
+    url.headers = JSON.parse($.muchong_headers)
+    if ($.debug) console.log(url)
+    return new Promise((resolve) => {
+        $.post(url, (error, response, data) => {
+            if (error) {
+                console.log(error)
+                throw new Error(error)
+            }
+            if ($.debug) console.log(response.body)
+            $.coin = data.match(/<em>(\d+?)<\/em>/)
+            $.other_message = data.match(/已连续.*?(\d+).*?天领取，连续.*?(\d+).*?天得大礼包/)
+            $.msg(`${$.name}`, "", `✅签到成功，签到情况如下：\n1️⃣获得金币${$.coin[1]}\n2️⃣${$.other_message[0]}`)
+            resolve()
+        })
     })
-  })
 
 }
-// prettier-ignore, @chavyleung
-function Env(t) { this.name = t, this.logs = [], this.isSurge = (() => "undefined" != typeof $httpClient), this.isQuanX = (() => "undefined" != typeof $task), this.log = ((...t) => { this.logs = [...this.logs, ...t], t ? console.log(t.join("\n")) : console.log(this.logs.join("\n")) }), this.msg = ((t = this.name, s = "", i = "") => { this.isSurge() && $notification.post(t, s, i), this.isQuanX() && $notify(t, s, i), this.log("==============\ud83d\udce3\u7cfb\u7edf\u901a\u77e5\ud83d\udce3=============="), t && this.log(t), s && this.log(s), i && this.log(i) }), this.getdata = (t => this.isSurge() ? $persistentStore.read(t) : this.isQuanX() ? $prefs.valueForKey(t) : void 0), this.setdata = ((t, s) => this.isSurge() ? $persistentStore.write(t, s) : this.isQuanX() ? $prefs.setValueForKey(t, s) : void 0), this.get = ((t, s) => this.send(t, "GET", s)), this.wait = ((t, s = t) => i => setTimeout(() => i(), Math.floor(Math.random() * (s - t + 1) + t))), this.post = ((t, s) => this.send(t, "POST", s)), this.send = ((t, s, i) => { if (this.isSurge()) { const e = "POST" == s ? $httpClient.post : $httpClient.get; e(t, (t, s, e) => { s && (s.body = e, s.statusCode = s.status), i(t, s, e) }) } this.isQuanX() && (t.method = s, $task.fetch(t).then(t => { t.status = t.statusCode, i(null, t, t.body) }, t => i(t.error, t, t))) }), this.done = ((t = {}) => $done(t)) }
-
+//作者@chavyleung
+function Env(s) {
+    this.name = s, this.data = null, this.logs = [], this.isSurge = (() => "undefined" != typeof $httpClient), this.isQuanX = (() => "undefined" != typeof $task), this.isLoon = (() => "undefined" != typeof $loon), this.isNode = (() => "undefined" != typeof module && !!module.exports), this.log = ((...s) => {
+        this.logs = [...this.logs, ...s], s ? console.log(s.join("\n")) : console.log(this.logs.join("\n"))
+    }), this.msg = ((s = this.name, t = "", i = "") => {
+        this.isLoon() && $notification.post(s, t, i, jump_url), this.isSurge() && !this.isLoon() && $notification.post(s, t, i), this.isQuanX() && $notify(s, t, i);
+        const e = ["", "==============\ud83d\udce3\u7cfb\u7edf\u901a\u77e5\ud83d\udce3=============="];
+        s && e.push(s), t && e.push(t), i && e.push(i), console.log(e.join("\n"))
+    }), this.getdata = (s => {
+        if (this.isSurge()) return $persistentStore.read(s);
+        if (this.isQuanX()) return $prefs.valueForKey(s);
+        if (this.isNode()) {
+            const t = "box.dat";
+            return this.fs = this.fs ? this.fs : require("fs"), this.fs.existsSync(t) ? (this.data = JSON.parse(this.fs.readFileSync(t)), this.data[s]) : null
+        }
+    }), this.setdata = ((s, t) => {
+        if (this.isSurge()) return $persistentStore.write(s, t);
+        if (this.isQuanX()) return $prefs.setValueForKey(s, t);
+        if (this.isNode()) {
+            const i = "box.dat";
+            return this.fs = this.fs ? this.fs : require("fs"), !!this.fs.existsSync(i) && (this.data = JSON.parse(this.fs.readFileSync(i)), this.data[t] = s, this.fs.writeFileSync(i, JSON.stringify(this.data)), !0)
+        }
+    }), this.wait = ((s, t = s) => i => setTimeout(() => i(), Math.floor(Math.random() * (t - s + 1) + s))), this.get = ((s, t) => this.send(s, "GET", t)), this.post = ((s, t) => this.send(s, "POST", t)), this.send = ((s, t, i) => {
+        if (this.isSurge()) {
+            const e = "POST" == t ? $httpClient.post : $httpClient.get;
+            e(s, (s, t, e) => {
+                t && (t.body = e, t.statusCode = t.status), i(s, t, e)
+            })
+        }
+        this.isQuanX() && (s.method = t, $task.fetch(s).then(s => {
+            s.status = s.statusCode, i(null, s, s.body)
+        }, s => i(s.error, s, s))), this.isNode() && (this.request = this.request ? this.request : require("request"), s.method = t, s.gzip = !0, this.request(s, (s, t, e) => {
+            t && (t.status = t.statusCode), i(null, t, e)
+        }))
+    }), this.done = ((s = {}) => this.isNode() ? null : $done(s))
+}

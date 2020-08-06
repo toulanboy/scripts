@@ -34,7 +34,7 @@
             { "id": "tlb_jd_detect_price3", "name": "商品链接C 目标价格", "val": "", "type": "number", "placeholder":"若商品C低于该价格，则会提醒。", "desc": "" },
             
             { "id": "tlb_jd_timeout", "name": "[debug]请求超时限制 (毫秒)", "val": 3000, "type": "number", "desc": "" },
-            { "id": "tlb_jd_debug", "name": "[debug]打开debug", "val": false, "type": "boolean", "desc": ""}    
+            { "id": "tlb_jd_debug", "name": "[debug]开启调试", "val": false, "type": "boolean", "desc": ""}    
         ],
         "author": "@toulanboy",
         "repo": "https://github.com/toulanboy/scripts/blob/master/jd_price_detect",
@@ -43,8 +43,11 @@
     },
       {
         "id": "muchong",
-        "name": "小木虫论坛",
-        "keys": ["muchong_headers"],
+        "name": "小木虫",
+        "keys": ["muchong_headers", "muchong_debug"],
+        "settings": [
+            { "id": "muchong_debug", "name": "开启调试", "val": false, "type": "boolean", "desc": "" }
+        ],
         "author": "@toulanboy",
         "repo": "https://github.com/toulanboy/scripts/blob/master/muchong",
         "icons": ["https://raw.githubusercontent.com/Orz-3/mini/master/muchong.png", "https://raw.githubusercontent.com/Orz-3/task/master/muchong.png"],
