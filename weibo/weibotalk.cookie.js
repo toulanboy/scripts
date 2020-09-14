@@ -63,7 +63,7 @@ const tokencheckinurl2 = 'evil_tokencheckinurl2'
 const tokenheaders2= 'evil_tokenheaders2'
 const tokencheckinheaders2 = 'evil_tokencheckinheaders2'
 
-if ($request && $request.method != 'OPTIONS' && $request.url.match(/\_\-\_myfollow\&need\_head\_cards/) && $request.url.match(/cardlist/)){
+if ($request && $request.method != 'OPTIONS' && $request.url.match(/\_\-\_myfollow.*?need\_head\_cards/) && $request.url.match(/cardlist/)){
   const listurl = $request.url
   
   const listheaders = JSON.stringify($request.headers)
