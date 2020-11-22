@@ -39,7 +39,7 @@ hostname = app.bilibili.com
 let body = JSON.parse($response.body);
 let i = body.data.items.length;
 while(i--){
-    if(body.data.items[i].card_goto.indexOf("ad")!=-1){
+    if(body.data.items[i].card_goto.indexOf("ad")!=-1 || body.data.items[i].card_goto.indexOf("live")!=-1){
         body.data.items.splice(i, 1);
     }
 }
