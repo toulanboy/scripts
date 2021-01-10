@@ -42,6 +42,15 @@ while(i--){
     if(body.data.items[i].card_goto.indexOf("ad")!=-1 || body.data.items[i].card_goto.indexOf("live")!=-1){
         body.data.items.splice(i, 1);
     }
+    else if(body.data.items[i].card_goto.indexOf("banner") != -1){
+        let j = body.data.items[i].banner_item.length
+        while(j--){
+            if(body.data.items[i].banner_item[j].hasOwnProperty("is_ad")){
+                body.data.items[i].banner_item.splice(j, 1);
+            }
+        }
+
+    }
 }
 body=JSON.stringify(body)
 $done({body})
