@@ -1,0 +1,6 @@
+#Author: @KleinerSource, tg@Plus_Movie_Best
+[Script]
+http-response ^https:\/\/mb3admin\.com\/admin\/service(\/registration\/validateDevice|\/appstore\/register|\/registration\/validate|\/registration\/getStatus|\/supporter\/retrievekey) requires-body=1,max-size=0, script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/emby/js/emby_unlock.js, tag=emby_unlock
+
+[MITM]
+hostname = mb3admin.com
