@@ -19,7 +19,7 @@
   *************************
   【Surge 4.2+ 脚本配置】
   *************************
-  ithome_ad = type=http-response,pattern=https:\/\/api\.ithome\.com\/json\/newslist\/news,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true
+  ithome_ad = type=http-response,pattern=https:\/\/api\.ithome\.com\/json\/(newslist|listpage)\/news,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true
 
   [MITM]
   hostname = api.ithome.com
@@ -28,7 +28,7 @@
   【Loon 2.1+ 脚本配置】
   *************************
   [script]
-  http-response https:\/\/api\.ithome\.com\/json\/newslist\/news script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true, tag=ithome_ad
+  http-response https:\/\/api\.ithome\.com\/json\/(newslist|listpage)\/news script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true, tag=ithome_ad
   
   [MITM]
   hostname = api.ithome.com
@@ -37,7 +37,7 @@
   【 QX 1.0.10+ 脚本配置 】 
   *************************
   [rewrite_local]
-  https:\/\/api\.ithome\.com\/json\/newslist\/news url script-response-body https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js
+  https:\/\/api\.ithome\.com\/json\/(newslist|listpage)\/news url script-response-body https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js
 
   [MITM]
   hostname = api.ithome.com

@@ -1,0 +1,7 @@
+#!name=ithome_ad
+#!desc=ithome_ad
+[Script]
+ithome_ad = type=http-response,pattern=https:\/\/api\.ithome\.com\/json\/(newslist|listpage)\/news,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true
+
+[MITM]
+hostname = %APPEND% api.ithome.com
