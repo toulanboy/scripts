@@ -19,7 +19,7 @@
   *************************
   【Surge 4.2+ 脚本配置】
   *************************
-  ithome_ad = type=http-response,pattern=https:\/\/api\.ithome\.com\/json\/(newslist|listpage)\/news,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true
+  ithome_ad = type=http-response,pattern=https:\/\/api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)),script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true
 
   [MITM]
   hostname = api.ithome.com
@@ -28,7 +28,7 @@
   【Loon 2.1+ 脚本配置】
   *************************
   [script]
-  http-response https:\/\/api\.ithome\.com\/json\/(newslist|listpage)\/news script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true, tag=ithome_ad
+  http-response https:\/\/api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)) script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true, tag=ithome_ad
   
   [MITM]
   hostname = api.ithome.com
@@ -37,18 +37,28 @@
   【 QX 1.0.10+ 脚本配置 】 
   *************************
   [rewrite_local]
-  https:\/\/api\.ithome\.com\/json\/(newslist|listpage)\/news url script-response-body https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js
+  https:\/\/api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)) url script-response-body https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js
 
   [MITM]
   hostname = api.ithome.com
 
   *********/
-  
+const url = $request.url;
 let body = JSON.parse($response.body);
-let i = body.newslist.length;
-while(i--){
-    if(body.newslist[i].hasOwnProperty('aid')){
-        body.newslist.splice(i, 1);
+if(url.indexOf("newlist") != -1 || url.indexOf("listpage") != -1){
+    let i = body.newslist.length;
+    while(i--){
+        if(body.newslist[i].hasOwnProperty('aid')){
+            body.newslist.splice(i, 1);
+        }
+    }
+}
+else if(url.indexOf("slide") != -1){
+    let i = body.length;
+    while(i--){
+        if(body[i].is_ad){
+            body.splice(i, 1);
+        }
     }
 }
 body=JSON.stringify(body)
