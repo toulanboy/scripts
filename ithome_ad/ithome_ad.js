@@ -45,7 +45,7 @@
   *********/
 const url = $request.url;
 let body = JSON.parse($response.body);
-if(url.indexOf("newlist") != -1 || url.indexOf("listpage") != -1){
+if(url.indexOf("newslist") != -1 || url.indexOf("listpage") != -1){
     let i = body.newslist.length;
     while(i--){
         if(body.newslist[i].hasOwnProperty('aid')){
@@ -56,7 +56,7 @@ if(url.indexOf("newlist") != -1 || url.indexOf("listpage") != -1){
 else if(url.indexOf("slide") != -1){
     let i = body.length;
     while(i--){
-        if(body[i].is_ad){
+        if(body[i].isad){
             body.splice(i, 1);
         }
     }
