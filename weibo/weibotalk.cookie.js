@@ -1,11 +1,7 @@
 /**********
-🐬主要作者：Evilbutcher （签到、cookie等主体逻辑编写）
-📕地址：https://github.com/evilbutcher
-
-🐬次要作者: toulanboy （细节完善，支持多平台）
-📕地址：https://github.com/toulanboy/scripts
-
-🐬 另，感谢@Seafun、@jaychou、@柠檬精、@MEOW帮忙测试及提供建议。
+🐬作者
+@Evilbutcher。 https://github.com/evilbutcher
+@toulanboy。https://github.com/toulanboy/scripts
 
 📌不定期更新各种签到、有趣的脚本，欢迎star🌟
 
@@ -17,10 +13,10 @@
 3. 点进一个超话页面，手动签到一次。弹出通知，提示获取超话签到链接成功。 若之前所有已经签到，请关注一个新超话进行签到。
 4. 回到quanx等软件，关掉获取cookie的rewrite。（loon是关掉获取cookie的脚本）
 
-📌 配置第2个账号方法：只需在第1个账号获取cookie结束后。在微博app中切换到第2个号，进行相同的获取逻辑即可。
+📌 配置第2个账号方法：第1个账号获取cookie结束后。在微博app中切换到第2个号，进行相同的获取逻辑。
 
 ***************************************
-【boxjs 订阅， 可以让你修改远程文件里面的变量】
+【boxjs 订阅， 用于修改脚本配置】
 ***************************************
 box订阅链接：https://raw.githubusercontent.com/toulanboy/scripts/master/toulanboy.boxjs.json
 订阅后，可以在box里面进行 cookie清空、通知个数、签到延迟 等设置.
@@ -28,23 +24,23 @@ box订阅链接：https://raw.githubusercontent.com/toulanboy/scripts/master/tou
 *************************
 【Surge 4.2+ 脚本配置】
 *************************
-微博超话cookie获取 = type=http-request,pattern=^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button),script-path=https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.cookie.js,requires-body=false
-微博超话 = type=cron,cronexp="5 0  * * *",script-path=https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.js,wake-system=true,timeout=600
+微博超话cookie获取 = type=http-request,pattern=^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button),script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.cookie.js
+微博超话 = type=cron,cronexp="5 0  * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.js,wake-system=true,timeout=600
 
 *************************
 【Loon 2.1+ 脚本配置】
 *************************
 [script]
-cron "5 0 * * *" script-path=https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.js, timeout=600, tag=微博超话
-http-request ^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button) script-path=https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.cookie.js,requires-body=false, tag=微博超话cookie获取
+cron "5 0 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.js, timeout=600, tag=微博超话
+http-request ^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button) script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.cookie.js,requires-body=false, tag=微博超话cookie获取
 
 *************************
 【 QX 1.0.10+ 脚本配置 】 
 *************************
 [rewrite_local]
-^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button) url script-request-header https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.cookie.js
+^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button) url script-request-header https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.cookie.js
 [task]
-5 0 * * * https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.js, tag=微博超话
+5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.js, tag=微博超话
 
 
 [MITM]
@@ -65,7 +61,6 @@ const tokencheckinheaders2 = 'evil_tokencheckinheaders2'
 
 if ($request && $request.method != 'OPTIONS' && $request.url.match(/\_\-\_myfollow.*?need\_head\_cards/) && $request.url.match(/cardlist/)){
   const listurl = $request.url
-  
   const listheaders = JSON.stringify($request.headers)
   if ($.getdata(tokenurl) == undefined || $.getdata(tokenurl) == "") {
     console.log(listurl)

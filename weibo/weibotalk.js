@@ -1,11 +1,7 @@
 /**********
-🐬主要作者：Evilbutcher （签到、cookie等主体逻辑编写）
-📕地址：https://github.com/evilbutcher
-
-🐬次要作者: toulanboy （细节完善，支持多平台）
-📕地址：https://github.com/toulanboy/scripts
-
-🐬 另，感谢@Seafun、@jaychou、@柠檬精、@MEOW帮忙测试及提供建议。
+🐬作者
+@Evilbutcher。 https://github.com/evilbutcher
+@toulanboy。https://github.com/toulanboy/scripts
 
 📌不定期更新各种签到、有趣的脚本，欢迎star🌟
 
@@ -17,10 +13,10 @@
 3. 点进一个超话页面，手动签到一次。弹出通知，提示获取超话签到链接成功。 若之前所有已经签到，请关注一个新超话进行签到。
 4. 回到quanx等软件，关掉获取cookie的rewrite。（loon是关掉获取cookie的脚本）
 
-📌 配置第2个账号方法：只需在第1个账号获取cookie结束后。在微博app中切换到第2个号，进行相同的获取逻辑即可。
+📌 配置第2个账号方法：第1个账号获取cookie结束后。在微博app中切换到第2个号，进行相同的获取逻辑。
 
 ***************************************
-【boxjs 订阅， 可以让你修改远程文件里面的变量】
+【boxjs 订阅， 用于修改脚本配置】
 ***************************************
 box订阅链接：https://raw.githubusercontent.com/toulanboy/scripts/master/toulanboy.boxjs.json
 订阅后，可以在box里面进行 cookie清空、通知个数、签到延迟 等设置.
@@ -28,23 +24,23 @@ box订阅链接：https://raw.githubusercontent.com/toulanboy/scripts/master/tou
 *************************
 【Surge 4.2+ 脚本配置】
 *************************
-微博超话cookie获取 = type=http-request,pattern=^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button),script-path=https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.cookie.js,requires-body=false
-微博超话 = type=cron,cronexp="5 0  * * *",script-path=https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.js,wake-system=true,timeout=600
+微博超话cookie获取 = type=http-request,pattern=^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button),script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.cookie.js
+微博超话 = type=cron,cronexp="5 0  * * *",script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.js,wake-system=true,timeout=600
 
 *************************
 【Loon 2.1+ 脚本配置】
 *************************
 [script]
-cron "5 0 * * *" script-path=https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.js, timeout=600, tag=微博超话
-http-request ^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button) script-path=https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.cookie.js,requires-body=false, tag=微博超话cookie获取
+cron "5 0 * * *" script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.js, timeout=600, tag=微博超话
+http-request ^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button) script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.cookie.js,requires-body=false, tag=微博超话cookie获取
 
 *************************
 【 QX 1.0.10+ 脚本配置 】 
 *************************
 [rewrite_local]
-^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button) url script-request-header https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.cookie.js
+^https?://m?api\.weibo\.c(n|om)\/2\/(cardlist|page\/button) url script-request-header https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.cookie.js
 [task]
-5 0 * * * https://raw.githubusercontent.com/evilbutcher/Quantumult_X/master/check_in/weibo/weibotalk.js, tag=微博超话
+5 0 * * * https://raw.githubusercontent.com/toulanboy/scripts/master/weibo/weibotalk.js, tag=微博超话
 
 
 [MITM]
@@ -75,11 +71,6 @@ debug = false
         for (var i in $.name_list) {
             await checkin($.id_list[i], $.name_list[i]);
             $.wait($.time);
-            if($.stopNum != 0){
-                console.log(`🚨检测到Cookie失效，脚本已自动停止`);
-                $.msg($.name, `🚨检测到Cookie失效，脚本已自动停止`,"");      
-                return
-            }
         }
         output(current)
     }
@@ -266,58 +257,51 @@ function checkin(id, name) {
                 throw new Error(error)
             }
             name = name.replace(/超话/, "")
-            if ((response.statusCode == 418)) {
+            if (response.statusCode == 200) {
+                msg_info = JSON.parse(response.body);
+                if(msg_info.hasOwnProperty('error_msg')){
+                    $.failNum += 1;
+                    error_code = msg_info.error_msg.match(/\((\d*?)\)/)[1]
+                    if(error_code == 382004){
+                        $.message.push(`【${name}】：✨今天已签到`);
+                        console.log(`【${name}】：${msg_info.error_msg}`);
+                    }
+                    else{
+                        $.message.push(`【${name}】：${msg_info.error_msg}`);
+                        console.log(`【${name}】："未知错误⚠️ 该请求的返回情况如下"`);
+                        console.log(response.body)
+                    }
+                }
+                else if (msg_info.hasOwnProperty(result) && msg_info.result == 1) {
+                    $.successNum += 1
+                    $.message.push(`【${name}】：✅${msg_info.button.name}`)
+                    console.log(`【${name}】：${msg_info.button.name}`);
+                }
+                else{
+                    $.failNum += 1
+                    $.message.push(`【${name}】：未知错误⚠️`);
+                    console.log(`【${name}】："未知错误⚠️ 该请求的返回情况如下"`);
+                    console.log(response.body)
+                }
+            }else if ((response.statusCode == 418)) {
                 $.failNum += 1
                 $.message.push(`【${name}】："签到太频繁啦，请稍后再试"`);
                 console.log(`【${name}】："签到太频繁啦，请稍后再试"`);
-                if (debug) console.log(response)
             } else if (response.statusCode == 511) {
                 $.failNum += 1;
                 $.message.push(`【${name}】："需要身份验证，请稍后再试"`);
                 console.log(`【${name}】："需要身份验证，请稍后再试"`);
             } else {
-                var body = response.body;
-                var obj = JSON.parse(body);
-                //console.log(obj);
-                var result = obj.result;
-                //console.log(result);
-                if (result == 1 || result == 382004) {
-                    $.successNum += 1;
-                } else {
-                    $.failNum += 1;
-                }
-                if (result == 1) {
-                    $.message.push(`【${name}】：✅${obj.button.name}`)
-                    console.log(`【${name}】：${obj.button.name}`);
-                } else if (result == 382004) {
-                    $.message.push(`【${name}】：✨今天已签到`);
-                    console.log(`【${name}】：${obj.error_msg}`);
-                } else if (result == 388000) {
-                    $.message.push(`【${name}】："需要拼图验证⚠️请加大签到间隔"`);
-                    console.log(`【${name}】："需要拼图验证⚠️请加大签到间隔"`);
-                    if (debug) console.log(response)
-                } else if (result == 382010) {
-                    $.message.push(`\n【${name}】："超话不存在⚠️"`);
-                    console.log(`【${name}】："超话不存在⚠️"`);
-                    if (debug) console.log(response)
-                } else if (obj["errno"] == -100) {
-                    $.stopNum += 1;
-                    $.message.push(`【${name}】：签到失败，请重新签到获取Cookie⚠️`);
-                    console.log(
-                        `【${name}】执行签到：签到失败，请重新签到获取Cookie⚠️`
-                    );
-                } else {
-                    $.message.push(`【${name}】："未知错误⚠️"`);
-                    console.log(`【${name}】："未知错误⚠️ 该请求的返回情况如下"`);
-                    console.log(response)
-                }
+                $.failNum += 1
+                $.message.push(`【${name}】：未知错误⚠️`);
+                console.log(`【${name}】："未知错误⚠️ 该请求的返回情况如下"`);
+                console.log(JSON.stringify(response))
             }
             resolve();
         })
 
     })
 }
-
 //@Chavy
 function Env(s) {
     this.name = s, this.data = null, this.logs = [], this.isSurge = (() => "undefined" != typeof $httpClient), this.isQuanX = (() => "undefined" != typeof $task), this.isNode = (() => "undefined" != typeof module && !!module.exports), this.log = ((...s) => {
