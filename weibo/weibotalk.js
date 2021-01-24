@@ -272,7 +272,7 @@ function checkin(id, name) {
                         console.log(response.body)
                     }
                 }
-                else if (msg_info.hasOwnProperty(result) && msg_info.result == 1) {
+                else if (msg_info.hasOwnProperty('result') && msg_info.result == 1) {
                     $.successNum += 1
                     $.message.push(`【${name}】：✅${msg_info.button.name}`)
                     console.log(`【${name}】：${msg_info.button.name}`);
