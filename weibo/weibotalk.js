@@ -48,7 +48,7 @@ hostname = api.weibo.cn
 
 *********/
 
-$ = new Env("微博超话")
+const $ = new Env("微博超话")
 
 /*
  * 可自定义的参数
