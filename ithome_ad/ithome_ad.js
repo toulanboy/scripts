@@ -15,32 +15,19 @@
   5、本人对任何脚本引发的问题概不负责，包括但不限于由脚本错误引起的任何损失和损害。
   6、如果任何单位或个人认为此脚本可能涉嫌侵犯其权利，应及时通知并提供身份证明，所有权证明，我们将在收到认证文件确认后删除此脚本。
   7、所有直接或间接使用、查看此脚本的人均应该仔细阅读此声明。本人保留随时更改或补充此声明的权利。一旦您使用或复制了此脚本，即视为您已接受此免责声明。
-
-  *************************
-  【Surge 4.2+ 脚本配置】
-  *************************
-  ithome_ad = type=http-response,pattern=https:\/\/api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)),script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true
-
-  [MITM]
-  hostname = api.ithome.com
-
-  *************************
-  【Loon 2.1+ 脚本配置】
-  *************************
-  [script]
-  http-response https:\/\/api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)) script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true, tag=ithome_ad
   
-  [MITM]
-  hostname = api.ithome.com
-
   *************************
-  【 QX 1.0.10+ 脚本配置 】 
-  *************************
-  [rewrite_local]
-  https:\/\/api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)) url script-response-body https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js
+  【使用方法】
+  ************************* 
 
-  [MITM]
-  hostname = api.ithome.com
+  Surge 插件：
+  https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_surge.sgmodule
+
+  Loon 订阅脚本：
+  https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_loon.plugin
+
+  Quanx 添加引用：
+  https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_quan.conf
 
   *********/
 const url = $request.url;
