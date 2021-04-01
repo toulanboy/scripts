@@ -1,0 +1,7 @@
+#!name=bilibili_ad
+#!desc=bilibili_ad
+[Script]
+bilibili_ad = type=http-response,pattern=https:\/\/app\.bilibili\.com\/x\/v2\/((feed\/index)|(splash\/list)) ,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_ad.js,requires-body=true
+
+[MITM]
+hostname = %APPEND% app.bilibili.com

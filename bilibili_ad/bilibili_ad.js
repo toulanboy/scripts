@@ -1,5 +1,6 @@
 /****
-🐬去掉B站APP推荐页的广告
+
+🐬 B站APP广告优化
   
 📕地址：https://github.com/toulanboy/scripts
 📌不定期更新各种签到、有趣的脚本，欢迎star🌟
@@ -14,43 +15,56 @@
 6、如果任何单位或个人认为此脚本可能涉嫌侵犯其权利，应及时通知并提供身份证明，所有权证明，我们将在收到认证文件确认后删除此脚本。
 7、所有直接或间接使用、查看此脚本的人均应该仔细阅读此声明。本人保留随时更改或补充此声明的权利。一旦您使用或复制了此脚本，即视为您已接受此免责声明。
 
-*************************
-【Surge 4.2+ 脚本配置】
-*************************
-bilibili_ad = type=http-response,pattern=https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_ad.js,requires-body=true
-[MITM]
-hostname = app.bilibili.com
-*************************
-【Loon 2.1+ 脚本配置】
-*************************
-[script]
-http-response https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_ad.js,requires-body=true, tag=bilibili_ad
 
-[MITM]
-hostname = app.bilibili.com
 *************************
-【 QX 1.0.10+ 脚本配置 】 
-*************************
-[rewrite_local]
-https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index url script-response-body https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_ad.js
-[MITM]
-hostname = app.bilibili.com
+【使用方法】
+************************* 
+
+Surge 插件：
+https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_surge.sgmodule
+
+Loon 订阅脚本：
+https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_loon.plugin
+
+Quanx 添加引用：
+https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_quanx.conf
+
+
 *****/
+
+const url = $request.url;
 let body = JSON.parse($response.body);
-let i = body.data.items.length;
-while(i--){
-    if(body.data.items[i].card_goto.indexOf("ad")!=-1 || body.data.items[i].card_goto.indexOf("live")!=-1){
-        body.data.items.splice(i, 1);
-    }
-    else if(body.data.items[i].card_goto.indexOf("banner") != -1){
-        let j = body.data.items[i].banner_item.length
-        while(j--){
-            if(body.data.items[i].banner_item[j].hasOwnProperty("is_ad")){
-                body.data.items[i].banner_item.splice(j, 1);
+
+try{
+    if (url.indexOf('splash\/list') != -1){
+        let i = body.data.list.length;
+        while(i--){
+            if (body.data.list[i].is_ad == true){
+                console.log('bilibili, 去掉开屏广告：' + body.data.list[i].uri_title);
+                body.data.list.splice(i, 1);
             }
         }
-
     }
+    else if (url.indexOf('feed\/index') != -1){
+        let i = body.data.items.length;
+        while(i--){
+            if(body.data.items[i].card_goto.indexOf("ad")!=-1 || body.data.items[i].card_goto.indexOf("live")!=-1){
+                body.data.items.splice(i, 1);
+            }
+            else if(body.data.items[i].card_goto.indexOf("banner") != -1){
+                let j = body.data.items[i].banner_item.length
+                while(j--){
+                    if(body.data.items[i].banner_item[j].hasOwnProperty("is_ad")){
+                        body.data.items[i].banner_item.splice(j, 1);
+                    }
+                }
+
+            }
+        }
+    }
+}
+catch(e){
+    console.log('ERROR: bilibili_ad , ' + e)
 }
 body=JSON.stringify(body)
 $done({body})
