@@ -32,22 +32,22 @@
   *********/
 const url = $request.url;
 let body = JSON.parse($response.body);
-if(url.indexOf("newslist") != -1 || url.indexOf("listpage") != -1){
+if (url.indexOf("newslist") != -1 || url.indexOf("listpage") != -1) {
     let i = body.newslist.length;
-    while(i--){
-        if(body.newslist[i].hasOwnProperty('aid')){
+    while (i--) {
+        if (body.newslist[i].hasOwnProperty('aid')) {
             body.newslist.splice(i, 1);
         }
     }
-}
-else if(url.indexOf("slide") != -1){
+} else if (url.indexOf("slide") != -1) {
     let i = body.length;
-    while(i--){
-        if(body[i].isad){
+    while (i--) {
+        if (body[i].isad || body[i].link.indexOf("jd.com") != -1 || body[i].link.indexOf("taobao.com") != -1) {
             body.splice(i, 1);
         }
     }
 }
-body=JSON.stringify(body)
-$done({body})
-
+body = JSON.stringify(body)
+$done({
+    body
+})
