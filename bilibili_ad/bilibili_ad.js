@@ -35,37 +35,37 @@ https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_
 const url = $request.url;
 let body = JSON.parse($response.body);
 
-try{
-    if (url.indexOf('splash\/list') != -1){
+try {
+    if (url.indexOf('splash\/list') != -1) {
         let i = body.data.list.length;
-        while(i--){
-            if (body.data.list[i].is_ad == true){
+        while (i--) {
+            if (body.data.list[i].is_ad == true) {
                 console.log('bilibili, 去掉开屏广告：' + body.data.list[i].uri_title);
                 body.data.list.splice(i, 1);
             }
         }
-    }
-    else if (url.indexOf('feed\/index') != -1){
+    } else if (url.indexOf('feed\/index') != -1) {
         let i = body.data.items.length;
-        while(i--){
-            if(body.data.items[i].card_goto.indexOf("ad")!=-1 || body.data.items[i].card_goto.indexOf("live")!=-1){
+        while (i--) {
+            if (body.data.items[i].card_goto.indexOf("ad") != -1 ||
+                body.data.items[i].card_goto.indexOf("live") != -1) {
                 body.data.items.splice(i, 1);
-            }
-            else if(body.data.items[i].card_goto.indexOf("banner") != -1){
+            } else if (body.data.items[i].card_goto.indexOf("banner") != -1) {
                 let j = body.data.items[i].banner_item.length
-                while(j--){
-                    if(body.data.items[i].banner_item[j].hasOwnProperty("is_ad")){
+                while (j--) {
+                    if (body.data.items[i].banner_item[j].hasOwnProperty("is_ad") ||
+                        (body.data.items[i].banner_item[j].hasOwnProperty("type") &&
+                            body.data.items[i].banner_item[j].type.indexOf("ad") != -1)) {
                         body.data.items[i].banner_item.splice(j, 1);
                     }
                 }
-
             }
         }
     }
-}
-catch(e){
+} catch (e) {
     console.log('ERROR: bilibili_ad , ' + e)
 }
-body=JSON.stringify(body)
-$done({body})
-
+body = JSON.stringify(body)
+$done({
+    body
+})
