@@ -40,9 +40,13 @@ try {
         let i = body.data.list.length;
         while (i--) {
             if (body.data.list[i].is_ad == true) {
-                console.log('bilibili, 去掉开屏广告：' + body.data.list[i].uri_title);
                 body.data.list.splice(i, 1);
             }
+        }
+        i = body.data.show.length;
+        while (i--) {
+            body.data.show[i].stime = 0;
+            body.data.show[i].etime = 1;
         }
     } else if (url.indexOf('feed\/index') != -1) {
         let i = body.data.items.length;
