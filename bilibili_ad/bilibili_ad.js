@@ -36,7 +36,8 @@ const url = $request.url;
 let body = JSON.parse($response.body);
 
 try {
-    if (url.indexOf('splash\/list') != -1) {
+
+    if (url.indexOf('splash\/list') != -1) { //开屏广告优化
         let i = body.data.list.length;
         while (i--) {
             if (body.data.list[i].is_ad == true) {
@@ -48,7 +49,7 @@ try {
             body.data.show[i].stime = 0;
             body.data.show[i].etime = 1;
         }
-    } else if (url.indexOf('feed\/index') != -1) {
+    } else if (url.indexOf('feed\/index') != -1) { //信息流优化
         let i = body.data.items.length;
         while (i--) {
             if (body.data.items[i].card_goto.indexOf("ad") != -1 ||
