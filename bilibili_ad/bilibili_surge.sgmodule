@@ -2,6 +2,7 @@
 #!desc=bilibili_ad
 [Script]
 bilibili_ad = type=http-response,pattern=https:\/\/app\.bilibili\.com\/x\/v2\/((feed\/index)|(splash\/list)) ,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_ad.js,requires-body=true
+bilibili_button = type=http-response,pattern=https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2 ,script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_button.js,requires-body=true
 
 [MITM]
 hostname = %APPEND% app.bilibili.com

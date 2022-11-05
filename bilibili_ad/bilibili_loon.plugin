@@ -1,5 +1,6 @@
 [Script]
 http-response https:\/\/app\.bilibili\.com\/x\/v2\/((feed\/index)|(splash\/list))  script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_ad.js,requires-body=true, tag=bilibili_ad
-  
+http-response https:\/\/app\.bilibili\.com\/x\/resource\/show\/tab\/v2  script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/bilibili_ad/bilibili_button.js,requires-body=true, tag=bilibili_button
+
 [MITM]
 hostname = app.bilibili.com
