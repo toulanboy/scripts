@@ -1,7 +1,11 @@
 #!name=ithome_ad
 #!desc=ithome_ad
+
+[URL Rewrite]
+^https?:\/\/api\.zuihuimai\.com\/static\/.*\/hongbao reject
+
 [Script]
-ithome_ad = type=http-response,pattern=https?:\/\/(api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)))|(napi\.ithome\.com\/api\/news\/index),script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true
+ithome_ad = type=http-response,pattern=^https?:\/\/(api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)))|(napi\.ithome\.com\/api\/news\/index),script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true
 
 [MITM]
 hostname = %APPEND% api.ithome.com,napi.ithome.com
