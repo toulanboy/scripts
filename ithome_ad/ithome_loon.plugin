@@ -1,5 +1,6 @@
 [URL Rewrite]
 ^https?:\/\/api\.zuihuimai\.com\/static\/.*\/hongbao reject
+^https://dat.ruanmei.com/ithome/money/acd.json$ reject
 
 [Script]
 http-response ^https?:\/\/(api\.ithome\.com\/json\/(((newslist|listpage)\/news)|(slide\/index)))|(napi\.ithome\.com\/api\/news\/index) script-path=https://raw.githubusercontent.com/toulanboy/scripts/master/ithome_ad/ithome_ad.js,requires-body=true, tag=ithome_ad
